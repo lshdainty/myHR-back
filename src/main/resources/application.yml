@@ -3,7 +3,7 @@ spring:
     name: myhr
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/study/study
+    url: jdbc:h2:tcp://localhost/~/study/myhr/myhr
     username: sa
     password:
     driver-class-name: org.h2.Driver
