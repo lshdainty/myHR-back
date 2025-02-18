@@ -3,6 +3,7 @@ package com.lshdainty.myhr.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -13,9 +14,11 @@ public class Recommend {
     private Long seq;
 
     @Column(name = "recommend_name")
+    @Setter
     private String name;
 
     @Column(name = "recommend_date")
     @NotNull
+    @Setter
     private String date;
 }
