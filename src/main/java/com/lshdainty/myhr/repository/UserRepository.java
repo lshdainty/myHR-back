@@ -18,7 +18,7 @@ public class UserRepository {
     }
 
     // userId로 단일 유저 검색
-    public User findUserByUserId(int id) {
+    public User findUser(int id) {
         return em.find(User.class, id);
     }
 
