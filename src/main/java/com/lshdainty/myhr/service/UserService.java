@@ -18,7 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public int join(User user) {
+    public Long join(User user) {
         userRepository.save(user);
         return user.getId();
     }

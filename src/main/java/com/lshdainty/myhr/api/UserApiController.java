@@ -29,7 +29,7 @@ public class UserApiController {
         user.setLunarYN(req.getLunarYN());
         user.setDelYN("N");
 
-        int userId = userService.join(user);
+        Long userId = userService.join(user);
 
         UserResp resp = new UserResp();
         resp.setUserNo(userId);
@@ -88,7 +88,7 @@ public class UserApiController {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     static class UserResp {
-        private int userNo;
+        private Long userNo;
         private String userName;
         private String userBirth;
         private String userWorkTime;

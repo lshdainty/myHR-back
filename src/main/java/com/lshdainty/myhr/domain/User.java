@@ -10,7 +10,7 @@ import lombok.Setter;
 public class User {
     @Id @GeneratedValue
     @Column(name = "user_no")
-    private int id;
+    private Long id;
 
     @Column(name = "user_name")
     @Setter
