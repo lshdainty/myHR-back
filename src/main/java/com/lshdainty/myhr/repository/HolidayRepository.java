@@ -24,13 +24,13 @@ public class HolidayRepository {
 
     // 전체 휴일 조회
     public List<Holiday> findHolidays() {
-        return em.createQuery("select h from Holiday h", Holiday.class)
+        return em.createQuery("select h from Holiday h order by h.date", Holiday.class)
                 .getResultList();
     }
 
     // 기간에 해당하는 휴일 조회
     public List<Holiday> findHolidaysByStartEndDate(String sDate, String eDate) {
-        return em.createQuery("select h from Holiday h where h.date between :sDate and :eDate", Holiday.class)
+        return em.createQuery("select h from Holiday h where h.date between :sDate and :eDate order by h.date", Holiday.class)
                 .setParameter("sDate", sDate)
                 .setParameter("eDate", eDate)
                 .getResultList();

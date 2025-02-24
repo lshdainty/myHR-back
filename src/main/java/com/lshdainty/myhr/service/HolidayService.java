@@ -26,6 +26,10 @@ public class HolidayService {
         return holiday.getSeq();
     }
 
+    public Holiday findHoliday(Long seq) {
+        return holidayRepository.findHoliday(seq);
+    }
+
     public List<Holiday> findHolidays() {
         return holidayRepository.findHolidays();
     }
@@ -44,6 +48,7 @@ public class HolidayService {
         holidayRepository.delete(findHoliday);
     }
 
+    // 권장휴무는 단순 조회만 함
     public List<Recommend> findRecommends() {
         return reommendRepository.findRecommends();
     }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "deptop_user")
@@ -44,6 +46,15 @@ public class User {
     @Column(name = "lunar_yn")
     @Setter
     private String lunarYN;
+
+//    @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
+//    private List<Schedule> schedules;
+
+    // schedule 추가 연관관계 편의 메소드
+//    public void addSchedule(Schedule schedule) {
+//        schedule.setUser(this);
+//        schedules.add(schedule);
+//    }
 
     @Override
     public String toString() {
