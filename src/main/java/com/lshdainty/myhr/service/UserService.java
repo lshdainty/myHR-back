@@ -23,7 +23,7 @@ public class UserService {
         return user.getId();
     }
 
-    public User findUser(int userId) {
+    public User findUser(Long userId) {
         return userRepository.findUser(userId);
     }
 
@@ -32,7 +32,7 @@ public class UserService {
     }
 
     @Transactional
-    public void editUser(int userId, User user) {
+    public void editUser(Long userId, User user) {
         User findUser = userRepository.findUser(userId);
 
         if (!Objects.isNull(user.getName())) { findUser.setName(user.getName()); }
@@ -43,7 +43,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(int userId, String delYN) {
+    public void deleteUser(Long userId, String delYN) {
         User findUser = userRepository.findUser(userId);
         findUser.setDelYN(delYN);
     }

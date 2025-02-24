@@ -38,7 +38,7 @@ public class UserApiController {
     }
 
     @GetMapping("/api/v1/user/{id}")
-    public ApiResponse user(@PathVariable("id") int userId) {
+    public ApiResponse user(@PathVariable("id") Long userId) {
         User user = userService.findUser(userId);
         return ApiResponse.success(new UserResp(user));
     }
@@ -54,7 +54,7 @@ public class UserApiController {
     }
 
     @PutMapping("/api/v1/user/{id}")
-    public ApiResponse editUser(@PathVariable("id") int userId, @RequestBody UserReq req) {
+    public ApiResponse editUser(@PathVariable("id") Long userId, @RequestBody UserReq req) {
         User user = new User();
         user.setName(req.getUserName());
         user.setBirth(req.getUserBirth());
@@ -68,7 +68,7 @@ public class UserApiController {
     }
 
     @DeleteMapping("/api/v1/user/{id}")
-    public ApiResponse deleteUser(@PathVariable("id") int userId) {
+    public ApiResponse deleteUser(@PathVariable("id") Long userId) {
         userService.deleteUser(userId, "Y");
         return ApiResponse.success();
     }

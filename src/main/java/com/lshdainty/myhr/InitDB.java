@@ -98,6 +98,21 @@ public class InitDB {
             saveVacation(4L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
             saveVacation(5L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
             saveVacation(6L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "출산 휴가", "출산 추가 휴가 부여", VacationType.ADDED, 80.0f, LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59).plusMonths(6));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 3.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 1.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "OT 정산", "월마감 지원", VacationType.ADDED, 2.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(4L, "OT 정산", "월마감 지원", VacationType.ADDED, 6.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 6.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 5.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "결혼 휴가", "결혼 추가 휴가 부여", VacationType.ADDED, 40.0f, LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59).plusMonths(6));
+            saveVacation(3L, "OT 정산", "월마감 지원", VacationType.ADDED, 1.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 1.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(5L, "OT 정산", "월마감 지원", VacationType.ADDED, 2.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(6L, "OT 정산", "월마감 지원", VacationType.ADDED, 10.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "OT 정산", "월마감 지원", VacationType.ADDED, 1.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "OT 정산", "월마감 지원", VacationType.ADDED, 2.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(3L, "OT 정산", "월마감 지원", VacationType.ADDED, 1.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
         }
 
         public void initSetSchedule() {
@@ -139,6 +154,7 @@ public class InitDB {
             vacation.setType(type);
             vacation.setGrantedTime(grantedTime);
             vacation.setExpirationDate(expirationDate);
+            vacation.setDelYN("N");
             vacation.setCreateDate(LocalDateTime.now());
             em.persist(vacation);
         }
