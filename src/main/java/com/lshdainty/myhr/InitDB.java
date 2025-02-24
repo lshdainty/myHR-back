@@ -1,13 +1,13 @@
 package com.lshdainty.myhr;
 
-import com.lshdainty.myhr.domain.Holiday;
-import com.lshdainty.myhr.domain.Recommend;
-import com.lshdainty.myhr.domain.User;
+import com.lshdainty.myhr.domain.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +20,7 @@ public class InitDB {
         initService.initSetMember();
         initService.initSetHoliday();
         initService.initSetRecommend();
+        initService.initSetVacation();
     }
 
     @Component
@@ -72,6 +73,39 @@ public class InitDB {
             saveRecommend("권장휴가", "20251114");
         }
 
+        public void initSetVacation() {
+            saveVacation(1L, "1분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "1분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(3L, "1분기 휴가", "작년 하루 사용", VacationType.BASIC, 24f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(4L, "1분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(5L, "1분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(6L, "1분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(3L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(4L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(5L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(6L, "2분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(3L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(4L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(5L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(6L, "3분기 휴가", "", VacationType.BASIC, 32.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(1L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(2L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(3L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(4L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(5L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+            saveVacation(6L, "4분기 휴가", "", VacationType.BASIC, 24.0f, LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        }
+
+        public void initSetSchedule() {
+
+        }
+
+
+
         public void saveMember(String name, String birth, String workTime, String employ, String lunar, String del) {
             User user = new User();
             user.setName(name);
@@ -95,6 +129,18 @@ public class InitDB {
             recommend.setName(name);
             recommend.setDate(date);
             em.persist(recommend);
+        }
+
+        public void saveVacation(Long userNo, String name, String description, VacationType type, float grantedTime, LocalDateTime expirationDate) {
+            Vacation vacation = new Vacation();
+            vacation.setUser(em.find(User.class, userNo));
+            vacation.setName(name);
+            vacation.setDescription(description);
+            vacation.setType(type);
+            vacation.setGrantedTime(grantedTime);
+            vacation.setExpirationDate(expirationDate);
+            vacation.setCreateDate(LocalDateTime.now());
+            em.persist(vacation);
         }
     }
 }
