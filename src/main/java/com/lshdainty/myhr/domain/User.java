@@ -56,19 +56,20 @@ public class User {
         vacations.add(vacation);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", pwd='" + pwd + '\'' +
-                ", ip='" + ip + '\'' +
-                ", role=" + role +
-                ", birth='" + birth + '\'' +
-                ", delYN='" + delYN + '\'' +
-                ", workTime='" + workTime + '\'' +
-                ", employ='" + employ + '\'' +
-                ", lunarYN='" + lunarYN + '\'' +
-                "}";
+    // 유저 생성자 (setter말고 해당 메소드 사용할 것)
+    public static User addUser(String name, String birth, String employ, String workTime, String lunarYN) {
+        User user = new User();
+        user.name = name;
+        user.birth = birth;
+        user.employ = employ;
+        user.workTime = workTime;
+        user.lunarYN = lunarYN;
+        user.delYN = "N";
+        return user;
+    }
+
+    // 유저 삭제 (setter말고 해당 메소드 사용할 것)
+    public void deleteUser() {
+        this.delYN = "Y";
     }
 }

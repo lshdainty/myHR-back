@@ -74,7 +74,7 @@ public class Vacation {
 
     // 휴가 삭제 (setter말고 해당 메소드 사용할 것)
     public void deleteVacation(Long deleteUserNo, String clientIP) {
-        this.delYN = "N";
+        this.delYN = "Y";
         this.deleteDate = LocalDateTime.now();
         this.deleteUserNo = deleteUserNo;
         this.deleteIP = clientIP;
