@@ -47,14 +47,14 @@ public class User {
     @Setter
     private String lunarYN;
 
-//    @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
-//    private List<Schedule> schedules;
+    @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
+    private List<Vacation> vacations;
 
-    // schedule 추가 연관관계 편의 메소드
-//    public void addSchedule(Schedule schedule) {
-//        schedule.setUser(this);
-//        schedules.add(schedule);
-//    }
+    // vacation 추가 연관관계 편의 메소드
+    public void addVacation(Vacation vacation) {
+        vacation.setUser(this);
+        vacations.add(vacation);
+    }
 
     @Override
     public String toString() {

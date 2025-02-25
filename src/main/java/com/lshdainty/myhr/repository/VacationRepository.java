@@ -17,17 +17,24 @@ public class VacationRepository {
         em.persist(vacation);
     }
 
+    // 단건 휴가 조회(delete용)
+    public Vacation findById(Long vacationId) {
+        return em.find(Vacation.class, vacationId);
+    }
+
     // 유저에 부여된 전체 휴가 조회
     public List<Vacation> findVacationsByUserNo(Long userNo) {
-        return em.createQuery("select v from Vacation v where v.user.id = :userNo", Vacation.class)
+        return em.createQuery("select v from Vacation v where v.user.id = :userNo and v.delYN = :delYN", Vacation.class)
                 .setParameter("userNo", userNo)
+                .setParameter("delYN", "N")
                 .getResultList();
     }
 
     // 연도에 해당하는 휴가 조회
     public List<Vacation> findVacationsByYear(String year) {
-        return em.createQuery("select v from Vacation v where year(v.expirationDate) = :year")
+        return em.createQuery("select v from Vacation v where year(v.expirationDate) = :year and v.delYN = :delYN", Vacation.class)
                 .setParameter("year", year)
+                .setParameter("delYN", "N")
                 .getResultList();
     }
 }

@@ -28,6 +28,14 @@ public class UserRepository {
                 .setParameter("delYN", "N")
                 .getResultList();
     }
+
+    // 유저가 가지고 있는 휴가 리스트 조회
+    public List<User> findUsersWithVacations() {
+        return em.createQuery("select u from User u join fetch u.vacations v where u.delYN = :uDelYN and v.delYN = :vDelYN", User.class)
+                .setParameter("uDelYN", "N")
+                .setParameter("vDelYN", "N")
+                .getResultList();
+    }
 }
 
 

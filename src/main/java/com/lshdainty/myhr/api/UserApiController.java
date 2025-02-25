@@ -69,7 +69,7 @@ public class UserApiController {
 
     @DeleteMapping("/api/v1/user/{id}")
     public ApiResponse deleteUser(@PathVariable("id") Long userId) {
-        userService.deleteUser(userId, "Y");
+        userService.deleteUser(userId);
         return ApiResponse.success();
     }
 
