@@ -43,6 +43,37 @@ public class VacationService {
     }
 
     @Transactional
+    public Vacation editVacation(Long vacationId, Long userNo, String reqName, String reqDesc, VacationType reqType, float reqGrantTime, LocalDateTime reqExpiryDate, Long addUserNo, String clientIP) {
+        Vacation findVacation = vacationRepository.findById(vacationId);
+
+        String name = "";
+        if (!Objects.isNull(reqName)) { name = findVacation.getName(); } else { name = reqName; }
+
+        String desc = "";
+        if (!Objects.isNull(reqDesc)) { desc = findVacation.getDesc(); } else { desc = reqDesc; }
+
+        VacationType type = null;
+        if (!Objects.isNull(reqType)) { type = findVacation.getType(); } else { type = reqType; }
+
+        float grantTime = 0.0f;
+        if (reqGrantTime == 0.0f) { grantTime = findVacation.getGrantTime(); } else { grantTime = reqGrantTime; }
+
+        LocalDateTime expiryDate = null;
+        if (!Objects.isNull(reqExpiryDate)) { expiryDate = findVacation.getExpiryDate(); } else { expiryDate = reqExpiryDate; }
+
+        User user = userRepository.findUser(userNo);
+
+        findVacation.deleteVacation(addUserNo, clientIP);
+
+        Vacation newVacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, clientIP);
+        vacationRepository.save(newVacation);
+
+        Vacation findNewVacation = vacationRepository.findById(vacationId);
+
+        return findNewVacation;
+    }
+
+    @Transactional
     public void deleteVacation(Long vacationId, Long delUserNo, String clientIP) {
         Vacation findVacation = vacationRepository.findById(vacationId);
         findVacation.deleteVacation(delUserNo, clientIP);

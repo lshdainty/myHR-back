@@ -62,9 +62,26 @@ public class VacationApiController {
         return ApiResponse.success(resp);
     }
 
+    @PutMapping("/api/v1/vacation/{id}")
+    public ApiResponse editVacation(@PathVariable("id") Long vacationId, @RequestBody VacationReq vacationReq, HttpServletRequest req) {
+        Vacation vacation = vacationService.editVacation(
+                vacationId,
+                vacationReq.getUserNo(),
+                vacationReq.getVacationName(),
+                vacationReq.getVacationDesc(),
+                vacationReq.getVacationType(),
+                vacationReq.getGrantTime(),
+                vacationReq.getExpiryDate(),
+                0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
+                req.getRemoteAddr()
+        );
+
+        return ApiResponse.success(new VacationResp(vacation));
+    }
+
     @DeleteMapping("/api/v1/vacation/{id}")
     public ApiResponse deleteVacation(@PathVariable("id") Long vacationId, HttpServletRequest req) {
-        Long delUserNo = 1L;   // 추후 로그인 한 사람의 id를 가져와서 삭제한 사람의 userNo에 세팅
+        Long delUserNo = 0L;   // 추후 로그인 한 사람의 id를 가져와서 삭제한 사람의 userNo에 세팅
         vacationService.deleteVacation(vacationId, delUserNo, req.getRemoteAddr());
         return ApiResponse.success();
     }
