@@ -18,7 +18,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long join(User user) {
+    public Long join(String name, String birth, String employ, String workTime, String lunar) {
+        User user = User.addUser(name, birth, employ, workTime, lunar);
         userRepository.save(user);
         return user.getId();
     }
@@ -32,14 +33,9 @@ public class UserService {
     }
 
     @Transactional
-    public void editUser(Long userId, User user) {
+    public void editUser(Long userId, String name, String birth, String employ, String workTime, String lunar) {
         User findUser = userRepository.findUser(userId);
-
-        if (!Objects.isNull(user.getName())) { findUser.setName(user.getName()); }
-        if (!Objects.isNull(user.getBirth())) { findUser.setBirth(user.getBirth()); }
-        if (!Objects.isNull(user.getEmploy())) { findUser.setEmploy(user.getEmploy()); }
-        if (!Objects.isNull(user.getWorkTime())) { findUser.setWorkTime(user.getWorkTime()); }
-        if (!Objects.isNull(user.getLunarYN())) { findUser.setLunarYN(user.getLunarYN()); }
+        findUser.updateUser(name, birth, employ, workTime, lunar);
     }
 
     @Transactional

@@ -21,15 +21,13 @@ public class UserApiController {
 
     @PostMapping("/api/v1/user")
     public ApiResponse join(@RequestBody UserReq req) {
-        User user = new User();
-        user.setName(req.getUserName());
-        user.setBirth(req.getUserBirth());
-        user.setEmploy(req.getUserEmploy());
-        user.setWorkTime(req.getUserWorkTime());
-        user.setLunarYN(req.getLunarYN());
-        user.setDelYN("N");
+        String name = req.getUserName();
+        String birth = req.getUserBirth();
+        String employ = req.getUserEmploy();
+        String workTime = req.getUserWorkTime();
+        String lunar = req.getLunarYN();
 
-        Long userId = userService.join(user);
+        Long userId = userService.join(name, birth, employ, workTime, lunar);
 
         UserResp resp = new UserResp();
         resp.setUserNo(userId);
@@ -55,13 +53,12 @@ public class UserApiController {
 
     @PutMapping("/api/v1/user/{id}")
     public ApiResponse editUser(@PathVariable("id") Long userId, @RequestBody UserReq req) {
-        User user = new User();
-        user.setName(req.getUserName());
-        user.setBirth(req.getUserBirth());
-        user.setEmploy(req.getUserEmploy());
-        user.setWorkTime(req.getUserWorkTime());
-        user.setLunarYN(req.getLunarYN());
-        userService.editUser(userId, user);
+        String name = req.getUserName();
+        String birth = req.getUserBirth();
+        String employ = req.getUserEmploy();
+        String workTime = req.getUserWorkTime();
+        String lunar = req.getLunarYN();
+        userService.editUser(userId, name, birth, employ, workTime, lunar);
 
         User findUser = userService.findUser(userId);
         return ApiResponse.success(new UserResp(findUser));
@@ -81,7 +78,6 @@ public class UserApiController {
         private String userWorkTime;
         private String userEmploy;
         private String lunarYN;
-        private String delYN;
     }
 
     @Data

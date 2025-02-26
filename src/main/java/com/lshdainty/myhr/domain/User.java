@@ -1,13 +1,16 @@
 package com.lshdainty.myhr.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // -> protected Order() {}와 동일한 의미 (롬복으로 생성자 막기)
 @Table(name = "deptop_user")
 public class User {
     @Id @GeneratedValue
@@ -15,7 +18,6 @@ public class User {
     private Long id;
 
     @Column(name = "user_name")
-    @Setter
     private String name;
 
     @Column(name = "user_pwd")
@@ -28,23 +30,18 @@ public class User {
     private int role;
 
     @Column(name = "user_birth")
-    @Setter
     private String birth;
 
     @Column(name = "del_yn")
-    @Setter
     private String delYN;
 
     @Column(name = "user_work_time")
-    @Setter
     private String workTime;
 
     @Column(name = "user_employ")
-    @Setter
     private String employ;
 
     @Column(name = "lunar_yn")
-    @Setter
     private String lunarYN;
 
     @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
@@ -66,6 +63,15 @@ public class User {
         user.lunarYN = lunarYN;
         user.delYN = "N";
         return user;
+    }
+
+    // 유저 수정 (setter말고 해당 메소드 사용할 것)
+    public void updateUser(String name, String birth, String employ, String workTime, String lunarYN) {
+        if (!Objects.isNull(name)) { this.name = name; }
+        if (!Objects.isNull(birth)) { this.birth = birth; }
+        if (!Objects.isNull(employ)) { this.employ = employ; }
+        if (!Objects.isNull(workTime)) { this.workTime = workTime; }
+        if (!Objects.isNull(lunarYN)) { this.lunarYN = lunarYN; }
     }
 
     // 유저 삭제 (setter말고 해당 메소드 사용할 것)
