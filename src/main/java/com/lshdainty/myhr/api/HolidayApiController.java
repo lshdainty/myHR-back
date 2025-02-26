@@ -22,11 +22,10 @@ public class HolidayApiController {
 
     @PostMapping("api/v1/holiday")
     public ApiResponse registHoliday(@RequestBody HolidayReq req) {
-        Holiday holiday = new Holiday();
-        holiday.setName(req.getName());
-        holiday.setDate(req.getDate());
+        String holidayName = req.getName();
+        String holidayDate = req.getDate();
 
-        Long holidaySeq = holidayService.save(holiday);
+        Long holidaySeq = holidayService.save(holidayName, holidayDate);
 
         HolidayResp resp = new HolidayResp();
         resp.setSeq(holidaySeq);
@@ -55,10 +54,9 @@ public class HolidayApiController {
 
     @PutMapping("/api/v1/holiday/{seq}")
     public ApiResponse editHoliday(@PathVariable("seq") Long seq, @RequestBody HolidayReq req) {
-        Holiday holiday = new Holiday();
-        holiday.setName(req.getName());
-        holiday.setDate(req.getDate());
-        holidayService.editHoliday(seq, holiday);
+        String holidayName = req.getName();
+        String holidayDate = req.getDate();
+        holidayService.editHoliday(seq, holidayName, holidayDate);
 
         Holiday findHoliday = holidayService.findHoliday(seq);
         HolidayResp resp = new HolidayResp(findHoliday);

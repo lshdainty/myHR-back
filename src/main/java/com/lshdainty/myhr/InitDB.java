@@ -125,16 +125,12 @@ public class InitDB {
         }
 
         public void saveHoliday(String name, String date) {
-            Holiday holiday = new Holiday();
-            holiday.setName(name);
-            holiday.setDate(date);
+            Holiday holiday = Holiday.addHoliday(name, date);
             em.persist(holiday);
         }
 
         public void saveRecommend(String name, String date) {
-            Recommend recommend = new Recommend();
-            recommend.setName(name);
-            recommend.setDate(date);
+            Recommend recommend = Recommend.addRecommend(name, date);
             em.persist(recommend);
         }
 

@@ -21,7 +21,8 @@ public class HolidayService {
     private final ReommendRepository reommendRepository;
 
     @Transactional
-    public Long save(Holiday holiday) {
+    public Long save(String name, String date) {
+        Holiday holiday = Holiday.addHoliday(name, date);
         holidayRepository.save(holiday);
         return holiday.getSeq();
     }
@@ -35,11 +36,9 @@ public class HolidayService {
     }
 
     @Transactional
-    public void editHoliday(Long holidaySeq, Holiday holiday) {
+    public void editHoliday(Long holidaySeq, String name, String date) {
         Holiday findHoliday = holidayRepository.findHoliday(holidaySeq);
-
-        if (!Objects.isNull(holiday.getName())) { findHoliday.setName(holiday.getName()); }
-        if (!Objects.isNull(holiday.getDate())) { findHoliday.setDate(holiday.getDate()); }
+        findHoliday.updateHoliday(name, date);
     }
 
     @Transactional
