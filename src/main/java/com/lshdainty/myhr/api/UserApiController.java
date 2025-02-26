@@ -21,18 +21,15 @@ public class UserApiController {
 
     @PostMapping("/api/v1/user")
     public ApiResponse join(@RequestBody UserReq req) {
-        String name = req.getUserName();
-        String birth = req.getUserBirth();
-        String employ = req.getUserEmploy();
-        String workTime = req.getUserWorkTime();
-        String lunar = req.getLunarYN();
+        Long userId = userService.join(
+                req.getUserName(),
+                req.getUserBirth(),
+                req.getUserEmploy(),
+                req.getUserWorkTime(),
+                req.getLunarYN()
+        );
 
-        Long userId = userService.join(name, birth, employ, workTime, lunar);
-
-        UserResp resp = new UserResp();
-        resp.setUserNo(userId);
-
-        return ApiResponse.success(resp);
+        return ApiResponse.success(new UserResp(userId));
     }
 
     @GetMapping("/api/v1/user/{id}")
@@ -53,12 +50,14 @@ public class UserApiController {
 
     @PutMapping("/api/v1/user/{id}")
     public ApiResponse editUser(@PathVariable("id") Long userId, @RequestBody UserReq req) {
-        String name = req.getUserName();
-        String birth = req.getUserBirth();
-        String employ = req.getUserEmploy();
-        String workTime = req.getUserWorkTime();
-        String lunar = req.getLunarYN();
-        userService.editUser(userId, name, birth, employ, workTime, lunar);
+        userService.editUser(
+                userId,
+                req.getUserName(),
+                req.getUserBirth(),
+                req.getUserEmploy(),
+                req.getUserWorkTime(),
+                req.getLunarYN()
+        );
 
         User findUser = userService.findUser(userId);
         return ApiResponse.success(new UserResp(findUser));
@@ -92,16 +91,18 @@ public class UserApiController {
         private String lunarYN;
         private String delYN;
 
-        public UserResp() {}
+        public UserResp(Long id) {
+            userNo = id;
+        }
 
         public UserResp(User user) {
-            this.userNo = user.getId();
-            this.userName = user.getName();
-            this.userBirth = user.getBirth();
-            this.userWorkTime = user.getWorkTime();
-            this.userEmploy = user.getEmploy();
-            this.lunarYN = user.getLunarYN();
-            this.delYN = user.getDelYN();
+            userNo = user.getId();
+            userName = user.getName();
+            userBirth = user.getBirth();
+            userWorkTime = user.getWorkTime();
+            userEmploy = user.getEmploy();
+            lunarYN = user.getLunarYN();
+            delYN = user.getDelYN();
         }
     }
 }

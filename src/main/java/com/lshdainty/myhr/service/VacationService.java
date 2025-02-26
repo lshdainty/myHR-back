@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,12 +23,19 @@ public class VacationService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long save(Long userNo, String name, String desc, VacationType type, float granted, LocalDateTime expiration, Long createUserNo, String ip) {
+    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate, Long addUserNo, String ip) {
         User user = userRepository.findUser(userNo);
-        Vacation vacation = Vacation.addVacation(user, name, desc, type, granted, expiration, createUserNo, ip);
+
+        if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
+
+        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, ip);
         vacationRepository.save(vacation);
 
         return vacation.getId();
+    }
+
+    public List<Vacation> findVacationsByUser(Long userNo) {
+        return vacationRepository.findVacationsByUserNo(userNo);
     }
 
     public List<User> findVacationsByUserGroup() {
@@ -35,8 +43,8 @@ public class VacationService {
     }
 
     @Transactional
-    public void deleteVacation(Long vacationId, Long deleteUserNo, String clientIP) {
+    public void deleteVacation(Long vacationId, Long delUserNo, String clientIP) {
         Vacation findVacation = vacationRepository.findById(vacationId);
-        findVacation.deleteVacation(deleteUserNo, clientIP);
+        findVacation.deleteVacation(delUserNo, clientIP);
     }
 }

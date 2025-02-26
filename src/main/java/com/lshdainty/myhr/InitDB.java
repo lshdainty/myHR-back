@@ -134,9 +134,9 @@ public class InitDB {
             em.persist(recommend);
         }
 
-        public void saveVacation(Long userNo, String name, String description, VacationType type, float grantedTime, LocalDateTime expirationDate) {
+        public void saveVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate) {
             User user = em.find(User.class, userNo);
-            Vacation vacation = Vacation.addVacation(user, name, description, type, grantedTime, expirationDate, 0L, "127.0.0.1");
+            Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, 0L, "127.0.0.1");
             em.persist(vacation);
         }
     }
