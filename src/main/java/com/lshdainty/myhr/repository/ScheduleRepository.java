@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -26,6 +27,14 @@ public class ScheduleRepository {
     public List<Schedule> findSchedulesByUserNo(Long userNo) {
         return em.createQuery("select s from Schedule s where s.user.id = :userNo and s.delYN = :delYN", Schedule.class)
                 .setParameter("userNo", userNo)
+                .setParameter("delYN", "N")
+                .getResultList();
+    }
+
+    // 기간에 해당하는 스케줄 조회
+    public List<Schedule> findSchedulesByStartDate(LocalDateTime startDate) {
+        return em.createQuery("select s from Schedule s where s.startDate >= :startDate and s.delYN = :delYN", Schedule.class)
+                .setParameter("startDate", startDate)
                 .setParameter("delYN", "N")
                 .getResultList();
     }

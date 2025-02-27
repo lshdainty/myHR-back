@@ -23,12 +23,12 @@ public class VacationService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate, Long addUserNo, String ip) {
+    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate, Long addUserNo, String clientIP) {
         User user = userRepository.findUser(userNo);
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
-        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, ip);
+        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, clientIP);
         vacationRepository.save(vacation);
 
         return vacation.getId();

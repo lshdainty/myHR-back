@@ -32,7 +32,7 @@ public class VacationRepository {
 
     // 연도에 해당하는 휴가 조회
     public List<Vacation> findVacationsByYear(String year) {
-        return em.createQuery("select v from Vacation v where year(v.expirationDate) = :year and v.delYN = :delYN", Vacation.class)
+        return em.createQuery("select v from Vacation v where year(v.expiryDate) = :year and v.delYN = :delYN", Vacation.class)
                 .setParameter("year", year)
                 .setParameter("delYN", "N")
                 .getResultList();
