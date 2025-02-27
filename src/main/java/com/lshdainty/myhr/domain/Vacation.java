@@ -1,13 +1,16 @@
 package com.lshdainty.myhr.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // -> protected Order() {}와 동일한 의미 (롬복으로 생성자 막기)
 @Table(name = "deptop_vacation")
 public class Vacation {
     @Id @GeneratedValue
@@ -22,7 +25,7 @@ public class Vacation {
     @Column(name = "vacation_name")
     private String name;
 
-    @Column(name = "vacation_description")
+    @Column(name = "vacation_desc")
     private String desc;
 
     @Enumerated(EnumType.STRING)
