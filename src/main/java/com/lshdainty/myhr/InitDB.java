@@ -21,6 +21,7 @@ public class InitDB {
         initService.initSetHoliday();
         initService.initSetRecommend();
         initService.initSetVacation();
+        initService.initSetSchedule();
     }
 
     @Component
@@ -116,7 +117,15 @@ public class InitDB {
         }
 
         public void initSetSchedule() {
-
+            saveSchedule(1L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(2025, 1, 2, 0, 0, 0), LocalDateTime.of(2025, 1, 2, 23, 59, 59));
+            saveSchedule(1L, "1시간", ScheduleType.ONETIMEOFF, LocalDateTime.of(2025, 2, 2, 9, 0, 0), LocalDateTime.of(2025, 2, 2, 10, 0, 0));
+            saveSchedule(1L, "1시간", ScheduleType.ONETIMEOFF, LocalDateTime.of(2025, 3, 17, 17, 0, 0), LocalDateTime.of(2025, 3, 17, 18, 0, 0));
+            saveSchedule(1L, "2시간", ScheduleType.TWOTIMEOFF, LocalDateTime.of(2025, 4, 27, 9, 0, 0), LocalDateTime.of(2025, 4, 27, 11, 0, 0));
+            saveSchedule(1L, "6시간", ScheduleType.SIXTIMEOFF, LocalDateTime.of(2025, 6, 5, 11, 0, 0), LocalDateTime.of(2025, 6, 5, 18, 0, 0));
+            saveSchedule(1L, "3시간", ScheduleType.THREETIMEOFF, LocalDateTime.of(2025, 7, 18, 9, 0, 0), LocalDateTime.of(2025, 7, 18, 12, 0, 0));
+            saveSchedule(1L, "5시간", ScheduleType.FIVETIMEOFF, LocalDateTime.of(2025, 8, 30, 13, 0, 0), LocalDateTime.of(2025, 8, 30, 18, 0, 0));
+            saveSchedule(1L, "오전반차", ScheduleType.MORNINGOFF, LocalDateTime.of(2025, 10, 15, 9, 0, 0), LocalDateTime.of(2025, 10, 15, 14, 0, 0));
+            saveSchedule(1L, "오후반차", ScheduleType.AFTERNOONOFF, LocalDateTime.of(2025, 12, 20, 14, 0, 0), LocalDateTime.of(2025, 12, 20, 18, 0, 0));
         }
 
         public void saveMember(String name, String birth, String workTime, String employ, String lunar) {
@@ -138,6 +147,12 @@ public class InitDB {
             User user = em.find(User.class, userNo);
             Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, 0L, "127.0.0.1");
             em.persist(vacation);
+        }
+
+        public void saveSchedule(Long userNo, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate) {
+            User user = em.find(User.class, userNo);
+            Schedule schedule = Schedule.addSchedule(user, desc, type, startDate, endDate, 0L, "127.0.0.1");
+            em.persist(schedule);
         }
     }
 }
