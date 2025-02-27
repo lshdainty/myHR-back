@@ -75,6 +75,22 @@ public class Vacation {
         return vacation;
     }
 
+    // 휴가 생성자 (setter말고 해당 메소드 사용할 것) (test용)
+    public static Vacation addVacation(User user, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate, Long userNo, String clientIP, LocalDateTime addTime) {
+        Vacation vacation = new Vacation();
+        vacation.user = user;
+        vacation.name = name;
+        vacation.desc = desc;
+        vacation.type = type;
+        vacation.grantTime = grantTime;
+        vacation.expiryDate = expiryDate;
+        vacation.delYN = "N";
+        vacation.addUserNo = userNo;
+        vacation.addClientIP = clientIP;
+        vacation.addDate = addTime;
+        return vacation;
+    }
+
     // 휴가 삭제 (setter말고 해당 메소드 사용할 것)
     public void deleteVacation(Long userNo, String clientIP) {
         this.delYN = "Y";

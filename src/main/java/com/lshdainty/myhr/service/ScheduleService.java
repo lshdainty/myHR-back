@@ -5,6 +5,7 @@ import com.lshdainty.myhr.domain.ScheduleType;
 import com.lshdainty.myhr.domain.User;
 import com.lshdainty.myhr.repository.ScheduleRepository;
 import com.lshdainty.myhr.repository.UserRepository;
+import com.lshdainty.myhr.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final VacationRepository vacationRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -29,11 +31,14 @@ public class ScheduleService {
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
         // 여기에 잔여 휴가가 있는지 확인하는 로직 추가할 것
+        // 스케쥴에 어떤 휴가를 선택했는지 추가하여 개수 차감필요
+        log.info("testsetesttsetestesetsetetsetssetsettse {}", vacationRepository.sumGrantTimeByParameterTime(userNo, LocalDateTime.now()));
+        return 0L;
 
-        Schedule schedule = Schedule.addSchedule(user, desc, type, start, end, addUserNo, clientIP);
-        scheduleRepository.save(schedule);
-
-        return schedule.getId();
+//        Schedule schedule = Schedule.addSchedule(user, desc, type, start, end, addUserNo, clientIP);
+//        scheduleRepository.save(schedule);
+//
+//        return schedule.getId();
     }
 
     public List<Schedule> findSchedulesByUserNo(Long userNo) {

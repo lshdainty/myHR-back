@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -36,5 +37,12 @@ public class VacationRepository {
                 .setParameter("year", year)
                 .setParameter("delYN", "N")
                 .getResultList();
+    }
+
+    public Double sumGrantTimeByParameterTime(Long userNo, LocalDateTime standardTime) {
+        return em.createQuery("select sum(v.grantTime) from Vacation v where v.user.id = :userNo and :standardTime between v.addDate and v.expiryDate", Double.class)
+                .setParameter("userNo", userNo)
+                .setParameter("standardTime", standardTime)
+                .getSingleResult();
     }
 }
