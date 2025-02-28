@@ -23,12 +23,12 @@ public class VacationService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime expiryDate, Long addUserNo, String clientIP) {
+    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long addUserNo, String clientIP) {
         User user = userRepository.findUser(userNo);
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
-        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, clientIP);
+        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
         vacationRepository.save(vacation);
 
         return vacation.getId();
@@ -43,7 +43,7 @@ public class VacationService {
     }
 
     @Transactional
-    public Vacation editVacation(Long vacationId, Long userNo, String reqName, String reqDesc, VacationType reqType, float reqGrantTime, LocalDateTime reqExpiryDate, Long addUserNo, String clientIP) {
+    public Vacation editVacation(Long vacationId, Long userNo, String reqName, String reqDesc, VacationType reqType, float reqGrantTime, LocalDateTime reqOccurDate, LocalDateTime reqExpiryDate, Long addUserNo, String clientIP) {
         Vacation findVacation = vacationRepository.findById(vacationId);
 
         if (Objects.isNull(findVacation)) { throw new IllegalArgumentException("vacation not found"); }
@@ -60,6 +60,9 @@ public class VacationService {
         float grantTime = 0.0f;
         if (reqGrantTime == 0.0f) { grantTime = findVacation.getGrantTime(); } else { grantTime = reqGrantTime; }
 
+        LocalDateTime occurDate = null;
+        if (Objects.isNull(reqOccurDate)) { occurDate = findVacation.getOccurDate(); } else { occurDate = reqOccurDate; }
+
         LocalDateTime expiryDate = null;
         if (Objects.isNull(reqExpiryDate)) { expiryDate = findVacation.getExpiryDate(); } else { expiryDate = reqExpiryDate; }
 
@@ -69,7 +72,7 @@ public class VacationService {
 
         findVacation.deleteVacation(addUserNo, clientIP);
 
-        Vacation newVacation = Vacation.addVacation(user, name, desc, type, grantTime, expiryDate, addUserNo, clientIP);
+        Vacation newVacation = Vacation.addVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
         vacationRepository.save(newVacation);
 
         Vacation findNewVacation = vacationRepository.findById(newVacation.getId());

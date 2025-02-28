@@ -32,6 +32,7 @@ public class VacationApiController {
                 vacationReq.getVacationDesc(),
                 vacationReq.getVacationType(),
                 vacationReq.getGrantTime(),
+                vacationReq.getOccurDate(),
                 vacationReq.getExpiryDate(),
                 0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                 req.getRemoteAddr()
@@ -71,6 +72,7 @@ public class VacationApiController {
                 vacationReq.getVacationDesc(),
                 vacationReq.getVacationType(),
                 vacationReq.getGrantTime(),
+                vacationReq.getOccurDate(),
                 vacationReq.getExpiryDate(),
                 0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                 req.getRemoteAddr()
@@ -94,6 +96,7 @@ public class VacationApiController {
         private String vacationDesc;
         private VacationType vacationType;
         private float grantTime;
+        private LocalDateTime occurDate;
         private LocalDateTime expiryDate;
     }
 
@@ -130,6 +133,7 @@ public class VacationApiController {
         private String vacationDesc;
         private VacationType vacationType;
         private float grantTime;
+        private LocalDateTime occurDate;
         private LocalDateTime expiryDate;
 
         public VacationResp(Long id) {
@@ -142,6 +146,7 @@ public class VacationApiController {
             vacationDesc = vacation.getDesc();
             vacationType = vacation.getType();
             grantTime = vacation.getGrantTime();
+            occurDate = vacation.getOccurDate();
             expiryDate = vacation.getExpiryDate();
         }
     }
