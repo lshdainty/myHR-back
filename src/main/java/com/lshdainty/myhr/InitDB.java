@@ -129,15 +129,17 @@ public class InitDB {
         }
 
         public void initSetSchedule() {
-            saveSchedule(1L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(2025, 1, 2, 0, 0, 0), LocalDateTime.of(2025, 1, 2, 23, 59, 59));
-            saveSchedule(1L, "1시간", ScheduleType.ONETIMEOFF, LocalDateTime.of(2025, 2, 2, 9, 0, 0), LocalDateTime.of(2025, 2, 2, 10, 0, 0));
-            saveSchedule(1L, "1시간", ScheduleType.ONETIMEOFF, LocalDateTime.of(2025, 3, 17, 17, 0, 0), LocalDateTime.of(2025, 3, 17, 18, 0, 0));
-            saveSchedule(1L, "2시간", ScheduleType.TWOTIMEOFF, LocalDateTime.of(2025, 4, 27, 9, 0, 0), LocalDateTime.of(2025, 4, 27, 11, 0, 0));
-            saveSchedule(1L, "6시간", ScheduleType.SIXTIMEOFF, LocalDateTime.of(2025, 6, 5, 11, 0, 0), LocalDateTime.of(2025, 6, 5, 18, 0, 0));
-            saveSchedule(1L, "3시간", ScheduleType.THREETIMEOFF, LocalDateTime.of(2025, 7, 18, 9, 0, 0), LocalDateTime.of(2025, 7, 18, 12, 0, 0));
-            saveSchedule(1L, "5시간", ScheduleType.FIVETIMEOFF, LocalDateTime.of(2025, 8, 30, 13, 0, 0), LocalDateTime.of(2025, 8, 30, 18, 0, 0));
-            saveSchedule(1L, "오전반차", ScheduleType.MORNINGOFF, LocalDateTime.of(2025, 10, 15, 9, 0, 0), LocalDateTime.of(2025, 10, 15, 14, 0, 0));
-            saveSchedule(1L, "오후반차", ScheduleType.AFTERNOONOFF, LocalDateTime.of(2025, 12, 20, 14, 0, 0), LocalDateTime.of(2025, 12, 20, 18, 0, 0));
+            LocalDateTime now = LocalDateTime.now();
+
+            saveSchedule(1L, 1L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(now.getYear(), 1, 2, 0, 0, 0), LocalDateTime.of(now.getYear(), 1, 3, 23, 59, 59));
+            saveSchedule(1L, 1L, "1시간", ScheduleType.ONETIMEOFF, LocalDateTime.of(now.getYear(), 2, 2, 9, 0, 0), LocalDateTime.of(now.getYear(), 2, 2, 10, 0, 0));
+            saveSchedule(1L, 1L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(now.getYear(), 3, 17, 0, 0, 0), LocalDateTime.of(now.getYear(), 3, 17, 23, 59, 59));
+            saveSchedule(1L, 25L, "2시간", ScheduleType.TWOTIMEOFF, LocalDateTime.of(now.getYear(), 4, 27, 9, 0, 0), LocalDateTime.of(now.getYear(), 4, 27, 11, 0, 0));
+            saveSchedule(1L, 25L, "6시간", ScheduleType.SIXTIMEOFF, LocalDateTime.of(now.getYear(), 6, 5, 11, 0, 0), LocalDateTime.of(now.getYear(), 6, 5, 18, 0, 0));
+            saveSchedule(1L, 25L, "3시간", ScheduleType.THREETIMEOFF, LocalDateTime.of(now.getYear(), 7, 18, 9, 0, 0), LocalDateTime.of(now.getYear(), 7, 18, 12, 0, 0));
+            saveSchedule(1L, 25L,"5시간", ScheduleType.FIVETIMEOFF, LocalDateTime.of(now.getYear(), 8, 30, 13, 0, 0), LocalDateTime.of(now.getYear(), 8, 30, 18, 0, 0));
+            saveSchedule(1L, 1L, "오전반차", ScheduleType.MORNINGOFF, LocalDateTime.of(now.getYear(), 10, 15, 9, 0, 0), LocalDateTime.of(now.getYear(), 10, 15, 14, 0, 0));
+            saveSchedule(1L, 1L, "오후반차", ScheduleType.AFTERNOONOFF, LocalDateTime.of(now.getYear(), 12, 20, 14, 0, 0), LocalDateTime.of(now.getYear(), 12, 20, 18, 0, 0));
         }
 
         public void saveMember(String name, String birth, String workTime, String employ, String lunar) {
@@ -161,9 +163,10 @@ public class InitDB {
             em.persist(vacation);
         }
 
-        public void saveSchedule(Long userNo, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate) {
+        public void saveSchedule(Long userNo, Long vacationId, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate) {
             User user = em.find(User.class, userNo);
-            Schedule schedule = Schedule.addSchedule(user, desc, type, startDate, endDate, 0L, "127.0.0.1");
+            Vacation vacation = em.find(Vacation.class, vacationId);
+            Schedule schedule = Schedule.addSchedule(user, vacation, desc, type, startDate, endDate, 0L, "127.0.0.1");
             em.persist(schedule);
         }
     }

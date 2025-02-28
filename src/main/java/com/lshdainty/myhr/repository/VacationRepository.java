@@ -39,10 +39,11 @@ public class VacationRepository {
                 .getResultList();
     }
 
-    public Double sumGrantTimeByParameterTime(Long userNo, LocalDateTime standardTime) {
-        return em.createQuery("select sum(v.grantTime) from Vacation v where v.user.id = :userNo and :standardTime between v.addDate and v.expiryDate", Double.class)
+    public List<Vacation> findVacationByParameterTime(Long userNo, LocalDateTime standardTime) {
+        return em.createQuery("select v from Vacation v where v.user.id = :userNo and :standardTime between v.occurDate and v.expiryDate and delYN = :delYN", Vacation.class)
                 .setParameter("userNo", userNo)
                 .setParameter("standardTime", standardTime)
-                .getSingleResult();
+                .setParameter("delYN", "N")
+                .getResultList();
     }
 }
