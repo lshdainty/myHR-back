@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class VacationApiController {
         private String vacationName;
         private String vacationDesc;
         private VacationType vacationType;
-        private float grantTime;
+        private BigDecimal grantTime;
         private LocalDateTime occurDate;
         private LocalDateTime expiryDate;
     }
@@ -105,8 +106,8 @@ public class VacationApiController {
     static class UserVacationsResp {
         private Long userNo;
         private String userName;
-        private float standardTime = 0.0f; // 기본 휴가
-        private float addedTime = 0.0f;    // 추가 휴가
+        private BigDecimal standardTime; // 기본 휴가
+        private BigDecimal addedTime;    // 추가 휴가
         private List<VacationResp> vacations = new ArrayList<>();
 
         public UserVacationsResp(User user) {
@@ -116,9 +117,9 @@ public class VacationApiController {
 
             vacations.forEach(v -> {
                 if (v.getVacationType().equals(VacationType.BASIC)) {
-                    standardTime += v.getGrantTime();
+                    standardTime = standardTime.add(v.getGrantTime());
                 } else if (v.getVacationType().equals(VacationType.ADDED)) {
-                    addedTime += v.getGrantTime();
+                    addedTime = addedTime.add(v.getGrantTime());
                 }
             });
         }
@@ -132,7 +133,7 @@ public class VacationApiController {
         private String vacationName;
         private String vacationDesc;
         private VacationType vacationType;
-        private float grantTime;
+        private BigDecimal grantTime;
         private LocalDateTime occurDate;
         private LocalDateTime expiryDate;
 

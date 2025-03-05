@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // -> protected Order() {}와 동일한 의미 (롬복으로 생성자 막기)
 @Table(name = "deptop_schedule")
 public class Schedule extends AuditingFields {
@@ -59,5 +63,16 @@ public class Schedule extends AuditingFields {
     public void deleteSchedule(Long userNo, String clientIP) {
         this.delYN = "Y";
         this.setDeleted(LocalDateTime.now(), userNo, clientIP);
+    }
+
+    // 사용 휴가 계산
+    public static BigDecimal calculateUsed(List<Schedule> schedules) {
+        BigDecimal total = new BigDecimal(0);
+
+        for (Schedule schedule : schedules) {
+            total = total.add(schedule.getType().calculate(schedule.getStartDate(), schedule.getEndDate()));
+        }
+
+        return total;
     }
 }

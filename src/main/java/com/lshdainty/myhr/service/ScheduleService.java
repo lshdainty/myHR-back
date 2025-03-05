@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -26,30 +27,41 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
+    public Long addSchedule(Long userNo, String desc, Long vacationId, ScheduleType type, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
+        // 유저 조회
+        User user = userRepository.findById(userNo);
+
+        // 유저 없으면 에러 반환
+        if (Objects.isNull(user) || user.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
+
+        // 휴가 조회
+        Vacation vacation = vacationRepository.findById(vacationId);
+
+        // 사용하려는 휴가가 없으면 에러 반환
+        if (Objects.isNull(vacation) || vacation.getDelYN().equals("Y")) { throw new IllegalArgumentException("vacation not found"); }
+        // 사용기한이 지난 휴가면 사용불가
+        if (vacation.getExpiryDate().isBefore(LocalDateTime.now())) { throw new IllegalArgumentException("this vacation has expired"); }
+
+        // 해당 휴가에 사용된 스케줄 리스트 가져오기
+        List<Schedule> findSchedults = scheduleRepository.findCountByVacation(vacation);
+
+        // 사용된 시간 계산
+        BigDecimal totalUsed = Schedule.calculateUsed(findSchedults);
+
+        // 남은 시간 계산
+        // grantTime-totalUsed < type.calculate(start, end)
+        if (vacation.getGrantTime().subtract(totalUsed).compareTo(type.calculate(start, end)) < 0) { throw new IllegalArgumentException("there is not enough vacation left"); }
+
+        // 휴가 등록
+        Schedule schedule = Schedule.addSchedule(user, vacation, desc, type, start, end, addUserNo, clientIP);
+        scheduleRepository.save(schedule);
+
+        return schedule.getId();
+    }
+
+    @Transactional
     public Long addSchedule(Long userNo, String desc, ScheduleType type, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
-        User user = userRepository.findUser(userNo);
-
-        if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
-
-        // 여기에 잔여 휴가가 있는지 확인하는 로직 추가할 것
-        // 스케쥴에 어떤 휴가를 선택했는지 추가하여 개수 차감필요
-        // 자체 팝업 추가해서 선택한 날짜에 맞는
-        List<Vacation> findVacations = vacationRepository.findVacationByParameterTime(userNo, LocalDateTime.now());
-        List<Schedule> findSchedults = scheduleRepository.findSchedulesByUserNo(userNo);
-        for (Schedule findSchedult : findSchedults) {
-            log.info("test log1: {}", findSchedult.getStartDate());
-            log.info("test log2: {}", findSchedult.getEndDate());
-            log.info("test log3: {}", findSchedult.getType().calculate(findSchedult.getStartDate(), findSchedult.getEndDate()));
-        }
-
-
-
         return 0L;
-
-//        Schedule schedule = Schedule.addSchedule(user, desc, type, start, end, addUserNo, clientIP);
-//        scheduleRepository.save(schedule);
-//
-//        return schedule.getId();
     }
 
     public List<Schedule> findSchedulesByUserNo(Long userNo) {
@@ -58,12 +70,12 @@ public class ScheduleService {
 
     @Transactional
     public void deleteSchedule(Long scheduleId, Long delUserNo, String clientIP) {
-        Schedule findSchedule = scheduleRepository.findById(scheduleId);
+        Schedule schedule = scheduleRepository.findById(scheduleId);
 
-        if (Objects.isNull(findSchedule)) { throw new IllegalArgumentException("schedule not found"); }
+        if (Objects.isNull(schedule) || schedule.getDelYN().equals("Y")) { throw new IllegalArgumentException("schedule not found"); }
 
-        if (findSchedule.getEndDate().isBefore(LocalDateTime.now())) { throw new IllegalArgumentException("Past schedules cannot be deleted"); }
+        if (schedule.getEndDate().isBefore(LocalDateTime.now())) { throw new IllegalArgumentException("Past schedules cannot be deleted"); }
 
-        findSchedule.deleteSchedule(delUserNo, clientIP);
+        schedule.deleteSchedule(delUserNo, clientIP);
     }
 }

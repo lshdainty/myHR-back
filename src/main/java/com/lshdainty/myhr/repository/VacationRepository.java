@@ -39,6 +39,7 @@ public class VacationRepository {
                 .getResultList();
     }
 
+    // 유저가 가진 휴가 중 기준 시간을 포함하는 휴가 리스트 조회
     public List<Vacation> findVacationByParameterTime(Long userNo, LocalDateTime standardTime) {
         return em.createQuery("select v from Vacation v where v.user.id = :userNo and :standardTime between v.occurDate and v.expiryDate and delYN = :delYN", Vacation.class)
                 .setParameter("userNo", userNo)

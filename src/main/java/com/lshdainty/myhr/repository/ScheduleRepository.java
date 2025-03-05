@@ -1,6 +1,7 @@
 package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Schedule;
+import com.lshdainty.myhr.domain.Vacation;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -35,6 +36,14 @@ public class ScheduleRepository {
     public List<Schedule> findSchedulesByStartDate(LocalDateTime startDate) {
         return em.createQuery("select s from Schedule s where s.startDate >= :startDate and s.delYN = :delYN", Schedule.class)
                 .setParameter("startDate", startDate)
+                .setParameter("delYN", "N")
+                .getResultList();
+    }
+
+    // 휴가에 속한 스케줄 조회
+    public List<Schedule> findCountByVacation(Vacation vacation) {
+        return em.createQuery("select s from Schedule s where s.vacation.id = :vacationId and s.delYN = :delYN", Schedule.class)
+                .setParameter("vacationId", vacation.getId())
                 .setParameter("delYN", "N")
                 .getResultList();
     }

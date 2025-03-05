@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -23,8 +24,8 @@ public class VacationService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long addVacation(Long userNo, String name, String desc, VacationType type, float grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long addUserNo, String clientIP) {
-        User user = userRepository.findUser(userNo);
+    public Long addVacation(Long userNo, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long addUserNo, String clientIP) {
+        User user = userRepository.findById(userNo);
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
@@ -43,7 +44,7 @@ public class VacationService {
     }
 
     @Transactional
-    public Vacation editVacation(Long vacationId, Long userNo, String reqName, String reqDesc, VacationType reqType, float reqGrantTime, LocalDateTime reqOccurDate, LocalDateTime reqExpiryDate, Long addUserNo, String clientIP) {
+    public Vacation editVacation(Long vacationId, Long userNo, String reqName, String reqDesc, VacationType reqType, BigDecimal reqGrantTime, LocalDateTime reqOccurDate, LocalDateTime reqExpiryDate, Long addUserNo, String clientIP) {
         Vacation findVacation = vacationRepository.findById(vacationId);
 
         if (Objects.isNull(findVacation)) { throw new IllegalArgumentException("vacation not found"); }
@@ -57,8 +58,8 @@ public class VacationService {
         VacationType type = null;
         if (Objects.isNull(reqType)) { type = findVacation.getType(); } else { type = reqType; }
 
-        float grantTime = 0.0f;
-        if (reqGrantTime == 0.0f) { grantTime = findVacation.getGrantTime(); } else { grantTime = reqGrantTime; }
+        BigDecimal grantTime = new BigDecimal(0);
+        if (reqGrantTime.compareTo(grantTime) == 0) { grantTime = findVacation.getGrantTime(); } else { grantTime = reqGrantTime; }
 
         LocalDateTime occurDate = null;
         if (Objects.isNull(reqOccurDate)) { occurDate = findVacation.getOccurDate(); } else { occurDate = reqOccurDate; }
@@ -66,7 +67,7 @@ public class VacationService {
         LocalDateTime expiryDate = null;
         if (Objects.isNull(reqExpiryDate)) { expiryDate = findVacation.getExpiryDate(); } else { expiryDate = reqExpiryDate; }
 
-        User user = userRepository.findUser(userNo);
+        User user = userRepository.findById(userNo);
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 

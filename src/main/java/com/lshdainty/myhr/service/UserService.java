@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class UserService {
     }
 
     public User findUser(Long userId) {
-        return userRepository.findUser(userId);
+        return userRepository.findById(userId);
     }
 
     public List<User> findUsers() {
@@ -34,13 +33,13 @@ public class UserService {
 
     @Transactional
     public void editUser(Long userId, String name, String birth, String employ, String workTime, String lunar) {
-        User findUser = userRepository.findUser(userId);
+        User findUser = userRepository.findById(userId);
         findUser.updateUser(name, birth, employ, workTime, lunar);
     }
 
     @Transactional
     public void deleteUser(Long userId) {
-        User findUser = userRepository.findUser(userId);
+        User findUser = userRepository.findById(userId);
         findUser.deleteUser();
     }
 }

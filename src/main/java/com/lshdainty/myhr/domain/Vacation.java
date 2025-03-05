@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Formula;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,8 +34,8 @@ public class Vacation extends AuditingFields {
     @Column(name = "vacation_type")
     private VacationType type;
 
-    @Column(name = "grant_time")
-    private float grantTime;
+    @Column(name = "grant_time", precision = 7, scale = 4)
+    private BigDecimal grantTime;
 
     @Column(name = "occur_date")
     private LocalDateTime occurDate;
@@ -46,7 +47,7 @@ public class Vacation extends AuditingFields {
     private String delYN;
 
     // 휴가 생성자 (setter말고 해당 메소드 사용할 것)
-    public static Vacation addVacation(User user, String name, String desc, VacationType type, float grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long userNo, String clientIP) {
+    public static Vacation addVacation(User user, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long userNo, String clientIP) {
         Vacation vacation = new Vacation();
         vacation.user = user;
         vacation.name = name;

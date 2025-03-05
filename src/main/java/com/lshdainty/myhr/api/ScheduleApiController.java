@@ -21,6 +21,7 @@ public class ScheduleApiController {
         scheduleService.addSchedule(
                 1L,
                 "",
+                1L,
                 ScheduleType.DAYOFF,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
