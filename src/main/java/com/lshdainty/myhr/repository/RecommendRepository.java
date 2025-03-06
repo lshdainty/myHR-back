@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ReommendRepository {
+public class RecommendRepository {
     private final EntityManager em;
 
     // 전체 권장휴일 조회
@@ -19,10 +19,10 @@ public class ReommendRepository {
     }
 
     // 기간에 해당하는 권장휴일 조회
-    public List<Recommend> findRecommendsByStartEndDate(String sDate, String eDate) {
-        return em.createQuery("select r from Recommend r where r.date between :sDate and :eDate order by r.date", Recommend.class)
-                .setParameter("sDate", sDate)
-                .setParameter("eDate", eDate)
+    public List<Recommend> findRecommendsByStartEndDate(String start, String end) {
+        return em.createQuery("select r from Recommend r where r.date between :start and :end order by r.date", Recommend.class)
+                .setParameter("start", start)
+                .setParameter("end", end)
                 .getResultList();
     }
 }

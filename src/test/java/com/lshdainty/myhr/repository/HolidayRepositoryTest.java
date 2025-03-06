@@ -122,12 +122,20 @@ class HolidayRepositoryTest {
         }
 
         // when
-        List<Holiday> holidays = holidayRepository.findHolidaysByStartEndDate("20250101", "20250504");
+        List<Holiday> holidayLeft = holidayRepository.findHolidaysByStartEndDate("20250101", "20250504");
+        List<Holiday> holidayRight = holidayRepository.findHolidaysByStartEndDate("20250102", "20250505");
+        List<Holiday> holidayNo = holidayRepository.findHolidaysByStartEndDate("20250102", "20250504");
 
         // then
-        assertThat(holidays.size()).isEqualTo(1);
-        assertThat(holidays.get(0).getName()).isEqualTo("신정");
-        assertThat(holidays.get(0).getDate()).isEqualTo("20250101");
+        assertThat(holidayLeft.size()).isEqualTo(1);
+        assertThat(holidayLeft.get(0).getName()).isEqualTo("신정");
+        assertThat(holidayLeft.get(0).getDate()).isEqualTo("20250101");
+
+        assertThat(holidayRight.size()).isEqualTo(1);
+        assertThat(holidayRight.get(0).getName()).isEqualTo("어린이날");
+        assertThat(holidayRight.get(0).getDate()).isEqualTo("20250505");
+
+        assertThat(holidayNo.size()).isEqualTo(0);
     }
 
     @Test

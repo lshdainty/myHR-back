@@ -3,14 +3,13 @@ package com.lshdainty.myhr.service;
 import com.lshdainty.myhr.domain.Holiday;
 import com.lshdainty.myhr.domain.Recommend;
 import com.lshdainty.myhr.repository.HolidayRepository;
-import com.lshdainty.myhr.repository.ReommendRepository;
+import com.lshdainty.myhr.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class HolidayService {
     private final HolidayRepository holidayRepository;
-    private final ReommendRepository reommendRepository;
+    private final RecommendRepository recommendRepository;
 
     @Transactional
     public Long save(String name, String date) {
@@ -49,6 +48,6 @@ public class HolidayService {
 
     // 권장휴무는 단순 조회만 함
     public List<Recommend> findRecommends() {
-        return reommendRepository.findRecommends();
+        return recommendRepository.findRecommends();
     }
 }
