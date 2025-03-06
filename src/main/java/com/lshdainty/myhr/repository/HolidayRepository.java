@@ -29,10 +29,10 @@ public class HolidayRepository {
     }
 
     // 기간에 해당하는 휴일 조회
-    public List<Holiday> findHolidaysByStartEndDate(String sDate, String eDate) {
-        return em.createQuery("select h from Holiday h where h.date between :sDate and :eDate order by h.date", Holiday.class)
-                .setParameter("sDate", sDate)
-                .setParameter("eDate", eDate)
+    public List<Holiday> findHolidaysByStartEndDate(String start, String end) {
+        return em.createQuery("select h from Holiday h where h.date between :start and :end order by h.date", Holiday.class)
+                .setParameter("start", start)
+                .setParameter("end", end)
                 .getResultList();
     }
 

@@ -49,8 +49,8 @@ public class ScheduleService {
         BigDecimal totalUsed = Schedule.calculateUsed(findSchedults);
 
         // 남은 시간 계산
-        // grantTime-totalUsed < type.calculate(start, end)
-        if (vacation.getGrantTime().subtract(totalUsed).compareTo(type.calculate(start, end)) < 0) { throw new IllegalArgumentException("there is not enough vacation left"); }
+        // grantTime - totalUsed - type.calculate(start, end) < 0
+        if (vacation.getGrantTime().subtract(totalUsed).subtract(type.calculate(start, end)).compareTo(BigDecimal.ZERO) < 0) { throw new IllegalArgumentException("there is not enough vacation left"); }
 
         // 휴가 등록
         Schedule schedule = Schedule.addSchedule(user, vacation, desc, type, start, end, addUserNo, clientIP);
