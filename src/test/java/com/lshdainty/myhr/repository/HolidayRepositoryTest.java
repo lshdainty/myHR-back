@@ -19,12 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @DisplayName("JPA 휴일 레포지토리 테스트")
 class HolidayRepositoryTest {
-
     @Autowired
     private HolidayRepository holidayRepository;
 
     @Test
-    @DisplayName("휴일 저장 테스트")
+    @DisplayName("휴일 저장")
     void save() {
         // given
         String name = "신정";
@@ -44,7 +43,7 @@ class HolidayRepositoryTest {
     }
 
     @Test
-    @DisplayName("휴일 조회 테스트")
+    @DisplayName("휴일 조회")
     void getHoliday() {
         // given
         String name = "신정";
@@ -55,8 +54,6 @@ class HolidayRepositoryTest {
 
         // when
         Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
-
-        List<Holiday> holidays = holidayRepository.findHolidays();
 
         // then
         assertThat(findHoliday.getSeq()).isEqualTo(holiday.getSeq());
@@ -89,7 +86,7 @@ class HolidayRepositoryTest {
     }
 
     @Test
-    @DisplayName("기간에 해당하는 휴일만 나오는지 조회 테스트 (정상 케이스)")
+    @DisplayName("기간에 해당하는 휴일만 나오는지 조회 (정상 케이스)")
     void getHolidaysByDate() {
         // given
         String[] names = {"신정", "어린이날", "크리스마스"};
@@ -110,7 +107,7 @@ class HolidayRepositoryTest {
     }
 
     @Test
-    @DisplayName("기간에 해당하는 휴일만 나오는지 조회 테스트 (경계값 케이스)")
+    @DisplayName("기간에 해당하는 휴일만 나오는지 조회 (경계값 케이스)")
     void getHolidaysByDateBoundary() {
         // given
         String[] names = {"신정", "어린이날", "크리스마스"};
@@ -139,7 +136,7 @@ class HolidayRepositoryTest {
     }
 
     @Test
-    @DisplayName("휴일 삭제 테스트")
+    @DisplayName("휴일 삭제")
     void deleteHoliday() {
         // given
         String name = "신정";

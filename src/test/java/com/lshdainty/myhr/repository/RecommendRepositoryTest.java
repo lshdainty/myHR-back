@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @DisplayName("JPA 권장휴가 레포지토리 테스트")
 class RecommendRepositoryTest {
-
     @Autowired
     private RecommendRepository recommendRepository;
 
@@ -50,7 +49,7 @@ class RecommendRepositoryTest {
     }
 
     @Test
-    @DisplayName("기간에 해당하는 권장휴가만 나오는지 조회 테스트 (정상 케이스)")
+    @DisplayName("기간에 해당하는 권장휴가만 나오는지 조회 (정상 케이스)")
     void getHolidaysByDate() {
         // given
         String[] names = {"1월 권장휴가", "2월 권장휴가", "3월 권장휴가"};
@@ -71,7 +70,7 @@ class RecommendRepositoryTest {
     }
 
     @Test
-    @DisplayName("기간에 해당하는 권장휴가만 나오는지 조회 테스트 (경계값 케이스)")
+    @DisplayName("기간에 해당하는 권장휴가만 나오는지 조회 (경계값 케이스)")
     void getHolidaysByDateBoundary() {
         // given
         String[] names = {"1월 권장휴가", "2월 권장휴가", "3월 권장휴가"};
