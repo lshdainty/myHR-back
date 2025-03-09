@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,12 @@ public class UserService {
     }
 
     public User findUser(Long userId) {
-        return userRepository.findById(userId);
+        User user = userRepository.findById(userId);
+
+        // 유저 없으면 에러 반환
+        if (Objects.isNull(user) || user.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
+
+        return user;
     }
 
     public List<User> findUsers() {
@@ -34,12 +40,20 @@ public class UserService {
     @Transactional
     public void editUser(Long userId, String name, String birth, String employ, String workTime, String lunar) {
         User findUser = userRepository.findById(userId);
+
+        // 유저 없으면 에러 반환
+        if (Objects.isNull(findUser) || findUser.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
+
         findUser.updateUser(name, birth, employ, workTime, lunar);
     }
 
     @Transactional
     public void deleteUser(Long userId) {
         User findUser = userRepository.findById(userId);
+
+        // 유저 없으면 에러 반환
+        if (Objects.isNull(findUser) || findUser.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
+
         findUser.deleteUser();
     }
 }

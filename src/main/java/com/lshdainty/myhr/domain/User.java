@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,13 +46,7 @@ public class User {
     private String lunarYN;
 
     @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
-    private List<Vacation> vacations;
-
-    // vacation 추가 연관관계 편의 메소드
-    public void addVacation(Vacation vacation) {
-        vacation.setUser(this);
-        vacations.add(vacation);
-    }
+    private List<Vacation> vacations =  new ArrayList<>();
 
     // 유저 생성자 (setter말고 해당 메소드 사용할 것)
     public static User addUser(String name, String birth, String employ, String workTime, String lunarYN) {

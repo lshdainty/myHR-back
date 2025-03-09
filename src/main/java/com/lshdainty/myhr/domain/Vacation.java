@@ -46,10 +46,16 @@ public class Vacation extends AuditingFields {
     @Column(name = "del_yn")
     private String delYN;
 
+    // user 추가 연관관계 편의 메소드
+    public void addUser(User user) {
+        this.user = user;
+        user.getVacations().add(this);
+    }
+
     // 휴가 생성자 (setter말고 해당 메소드 사용할 것)
     public static Vacation addVacation(User user, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long userNo, String clientIP) {
         Vacation vacation = new Vacation();
-        vacation.user = user;
+        vacation.addUser(user);
         vacation.name = name;
         vacation.desc = desc;
         vacation.type = type;
