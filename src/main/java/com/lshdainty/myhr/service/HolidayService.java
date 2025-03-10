@@ -21,7 +21,7 @@ public class HolidayService {
 
     @Transactional
     public Long save(String name, String date) {
-        Holiday holiday = Holiday.addHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date);
         holidayRepository.save(holiday);
         return holiday.getSeq();
     }

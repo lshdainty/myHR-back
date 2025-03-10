@@ -25,7 +25,7 @@ public class Holiday {
     private String date;
 
     // 휴일 생성자 (setter말고 해당 메소드 사용할 것)
-    public static Holiday addHoliday(String name, String date) {
+    public static Holiday createHoliday(String name, String date) {
         Holiday holiday = new Holiday();
         holiday.name = name;
         holiday.date = date;

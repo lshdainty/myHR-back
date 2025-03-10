@@ -49,7 +49,7 @@ public class User {
     private List<Vacation> vacations;
 
     // 유저 생성자 (setter말고 해당 메소드 사용할 것)
-    public static User addUser(String name, String birth, String employ, String workTime, String lunarYN) {
+    public static User createUser(String name, String birth, String employ, String workTime, String lunarYN) {
         User user = new User();
         user.name = name;
         user.birth = birth;

@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -53,7 +52,7 @@ public class Vacation extends AuditingFields {
     }
 
     // 휴가 생성자 (setter말고 해당 메소드 사용할 것)
-    public static Vacation addVacation(User user, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long userNo, String clientIP) {
+    public static Vacation createVacation(User user, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime occurDate, LocalDateTime expiryDate, Long userNo, String clientIP) {
         Vacation vacation = new Vacation();
         vacation.addUser(user);
         vacation.name = name;

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(UserRepository.class)
@@ -40,7 +39,7 @@ class UserRepositoryTest {
         String workTime = "9 ~ 6";
         String lunarYN = "N";
 
-        User user = User.addUser(name, birth, employ, workTime, lunarYN);
+        User user = User.createUser(name, birth, employ, workTime, lunarYN);
 
         // when
         userRepository.save(user);
@@ -66,7 +65,7 @@ class UserRepositoryTest {
         String workTime = "9 ~ 6";
         String lunarYN = "N";
 
-        User user = User.addUser(name, birth, employ, workTime, lunarYN);
+        User user = User.createUser(name, birth, employ, workTime, lunarYN);
         userRepository.save(user);
 
         // when
@@ -92,7 +91,7 @@ class UserRepositoryTest {
         String[] lunarYNs = {"N", "N", "Y"};
 
         for (int i = 0; i < names.length; i++) {
-            User user = User.addUser(names[i], births[i], employs[i], workTimes[i], lunarYNs[i]);
+            User user = User.createUser(names[i], births[i], employs[i], workTimes[i], lunarYNs[i]);
             userRepository.save(user);
         }
 
@@ -113,7 +112,7 @@ class UserRepositoryTest {
         String workTime = "9 ~ 6";
         String lunarYN = "N";
 
-        User user = User.addUser(name, birth, employ, workTime, lunarYN);
+        User user = User.createUser(name, birth, employ, workTime, lunarYN);
         userRepository.save(user);
 
         // when
@@ -134,7 +133,7 @@ class UserRepositoryTest {
         String workTime = "9 ~ 6";
         String lunarYN = "N";
 
-        User user = User.addUser(name, birth, employ, workTime, lunarYN);
+        User user = User.createUser(name, birth, employ, workTime, lunarYN);
         userRepository.save(user);
 
         name = "이서준";
@@ -156,19 +155,19 @@ class UserRepositoryTest {
     @DisplayName("유저가 가지고 있는 휴가 리스트 조회")
     void getUserWithVacations() {
         // given
-        User userA = User.addUser("이서준", "19700723", "9 ~ 6", "ADMIN", "N");
-        User userB = User.addUser("김서연", "19701026", "8 ~ 5", "BP", "N");
-        User userC = User.addUser("김지후", "19740115", "10 ~ 7", "BP", "Y");
+        User userA = User.createUser("이서준", "19700723", "9 ~ 6", "ADMIN", "N");
+        User userB = User.createUser("김서연", "19701026", "8 ~ 5", "BP", "N");
+        User userC = User.createUser("김지후", "19740115", "10 ~ 7", "BP", "Y");
         userRepository.save(userA);
         userRepository.save(userB);
         userRepository.save(userC);
 
         LocalDateTime now = LocalDateTime.now();
-        em.persist(Vacation.addVacation(userA, "1분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
-        em.persist(Vacation.addVacation(userB, "1분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
-        em.persist(Vacation.addVacation(userC, "1분기 휴가", "작년 하루 사용", VacationType.BASIC, new BigDecimal("24"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
-        em.persist(Vacation.addVacation(userA, "2분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 4, 1, 0, 0, 0), 0L, "127.0.0.1"));
-        em.persist(Vacation.addVacation(userB, "2분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 4, 1, 0, 0, 0), 0L, "127.0.0.1"));
+        em.persist(Vacation.createVacation(userA, "1분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
+        em.persist(Vacation.createVacation(userB, "1분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
+        em.persist(Vacation.createVacation(userC, "1분기 휴가", "작년 하루 사용", VacationType.BASIC, new BigDecimal("24"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0), 0L, "127.0.0.1"));
+        em.persist(Vacation.createVacation(userA, "2분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 4, 1, 0, 0, 0), 0L, "127.0.0.1"));
+        em.persist(Vacation.createVacation(userB, "2분기 휴가", "", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59), LocalDateTime.of(now.getYear(), 4, 1, 0, 0, 0), 0L, "127.0.0.1"));
 
         userB.deleteUser();
 

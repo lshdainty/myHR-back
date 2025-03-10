@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Component
 @RequiredArgsConstructor
@@ -145,30 +144,30 @@ public class InitDB {
         }
 
         public void saveMember(String name, String birth, String workTime, String employ, String lunar) {
-            User user = User.addUser(name, birth, employ, workTime, lunar);
+            User user = User.createUser(name, birth, employ, workTime, lunar);
             em.persist(user);
         }
 
         public void saveHoliday(String name, String date) {
-            Holiday holiday = Holiday.addHoliday(name, date);
+            Holiday holiday = Holiday.createHoliday(name, date);
             em.persist(holiday);
         }
 
         public void saveRecommend(String name, String date) {
-            Recommend recommend = Recommend.addRecommend(name, date);
+            Recommend recommend = Recommend.createRecommend(name, date);
             em.persist(recommend);
         }
 
         public void saveVacation(Long userNo, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime expiryDate, LocalDateTime occurDate) {
             User user = em.find(User.class, userNo);
-            Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, occurDate, expiryDate, 0L, "127.0.0.1");
+            Vacation vacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, 0L, "127.0.0.1");
             em.persist(vacation);
         }
 
         public void saveSchedule(Long userNo, Long vacationId, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate) {
             User user = em.find(User.class, userNo);
             Vacation vacation = em.find(Vacation.class, vacationId);
-            Schedule schedule = Schedule.addSchedule(user, vacation, desc, type, startDate, endDate, 0L, "127.0.0.1");
+            Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, startDate, endDate, 0L, "127.0.0.1");
             em.persist(schedule);
         }
     }

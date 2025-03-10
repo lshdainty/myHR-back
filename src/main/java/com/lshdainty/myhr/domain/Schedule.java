@@ -49,7 +49,7 @@ public class Schedule extends AuditingFields {
     private String delYN;
 
     // 스케줄 생성자 (setter말고 해당 메소드 사용할 것)
-    public static Schedule addSchedule(User user, Vacation vacation, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate, Long userNo, String clientIP) {
+    public static Schedule createSchedule(User user, Vacation vacation, String desc, ScheduleType type, LocalDateTime startDate, LocalDateTime endDate, Long userNo, String clientIP) {
         Schedule schedule = new Schedule();
         schedule.user = user;
         schedule.vacation = vacation;

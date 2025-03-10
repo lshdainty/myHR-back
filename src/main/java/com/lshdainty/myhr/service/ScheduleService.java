@@ -53,7 +53,7 @@ public class ScheduleService {
         }
 
         // 휴가 등록이 가능한지 확인을 위한 스케줄 생성
-        Schedule schedule = Schedule.addSchedule(user, vacation, desc, type, start, end, addUserNo, clientIP);
+        Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, start, end, addUserNo, clientIP);
 
         // 사용할 휴가의 실제 사용 시간 계산
         BigDecimal toBeUse = calculateRealUse(schedule);

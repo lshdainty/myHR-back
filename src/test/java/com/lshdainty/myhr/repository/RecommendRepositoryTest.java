@@ -32,7 +32,7 @@ class RecommendRepositoryTest {
         String[] dates = {"20250101", "20250201", "20250301"};
 
         for (int i = 0; i < names.length; i++) {
-            Recommend recommend = Recommend.addRecommend(names[i], dates[i]);
+            Recommend recommend = Recommend.createRecommend(names[i], dates[i]);
             em.persist(recommend);
         }
 
@@ -56,7 +56,7 @@ class RecommendRepositoryTest {
         String[] dates = {"20250101", "20250201", "20250301"};
 
         for (int i = 0; i < names.length; i++) {
-            Recommend recommend = Recommend.addRecommend(names[i], dates[i]);
+            Recommend recommend = Recommend.createRecommend(names[i], dates[i]);
             em.persist(recommend);
         }
 
@@ -77,7 +77,7 @@ class RecommendRepositoryTest {
         String[] dates = {"20250101", "20250201", "20250301"};
 
         for (int i = 0; i < names.length; i++) {
-            Recommend recommend = Recommend.addRecommend(names[i], dates[i]);
+            Recommend recommend = Recommend.createRecommend(names[i], dates[i]);
             em.persist(recommend);
         }
 

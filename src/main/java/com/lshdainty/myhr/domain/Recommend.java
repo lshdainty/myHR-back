@@ -24,7 +24,7 @@ public class Recommend {
 
     // 권장휴일 생성자 (setter말고 해당 메소드 사용할 것)
     // test용
-    public static Recommend addRecommend(String name, String date) {
+    public static Recommend createRecommend(String name, String date) {
         Recommend recommend = new Recommend();
         recommend.name = name;
         recommend.date = date;

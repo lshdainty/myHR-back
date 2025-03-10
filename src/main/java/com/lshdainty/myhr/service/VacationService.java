@@ -29,7 +29,7 @@ public class VacationService {
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
-        Vacation vacation = Vacation.addVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
+        Vacation vacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
         vacationRepository.save(vacation);
 
         return vacation.getId();
@@ -73,7 +73,7 @@ public class VacationService {
 
         findVacation.deleteVacation(addUserNo, clientIP);
 
-        Vacation newVacation = Vacation.addVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
+        Vacation newVacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
         vacationRepository.save(newVacation);
 
         Vacation findNewVacation = vacationRepository.findById(newVacation.getId());

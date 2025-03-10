@@ -29,7 +29,7 @@ class HolidayRepositoryTest {
         String name = "신정";
         String date = "20250101";
 
-        Holiday holiday = Holiday.addHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date);
 
         // when
         holidayRepository.save(holiday);
@@ -49,7 +49,7 @@ class HolidayRepositoryTest {
         String name = "신정";
         String date = "20250101";
 
-        Holiday holiday = Holiday.addHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date);
         holidayRepository.save(holiday);
 
         // when
@@ -69,7 +69,7 @@ class HolidayRepositoryTest {
         String[] dates = {"20250101", "20250505", "20251225"};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.addHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
             holidayRepository.save(holiday);
         }
 
@@ -93,7 +93,7 @@ class HolidayRepositoryTest {
         String[] dates = {"20250101", "20250505", "20251225"};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.addHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
             holidayRepository.save(holiday);
         }
 
@@ -114,7 +114,7 @@ class HolidayRepositoryTest {
         String[] dates = {"20250101", "20250505", "20251225"};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.addHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
             holidayRepository.save(holiday);
         }
 
@@ -142,7 +142,7 @@ class HolidayRepositoryTest {
         String name = "신정";
         String date = "20250101";
 
-        Holiday holiday = Holiday.addHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date);
         holidayRepository.save(holiday);
 
         // when
