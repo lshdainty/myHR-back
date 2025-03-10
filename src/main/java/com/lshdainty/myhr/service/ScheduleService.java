@@ -28,7 +28,7 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long addSchedule(Long userNo, String desc, Long vacationId, ScheduleType type, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
+    public Long addSchedule(Long userNo, Long vacationId, ScheduleType type, String desc, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
         // 유저 조회
         User user = userRepository.findById(userNo);
 
@@ -69,8 +69,19 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Long addSchedule(Long userNo, String desc, ScheduleType type, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
-        return 0L;
+    public Long addSchedule(Long userNo, ScheduleType type, String desc, LocalDateTime start, LocalDateTime end, Long addUserNo, String clientIP) {
+        // 유저 조회
+        User user = userRepository.findById(userNo);
+
+        // 유저 없으면 에러 반환
+        if (Objects.isNull(user) || user.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
+
+        Schedule schedule = Schedule.createSchedule(user, null, desc, type, start, end, addUserNo, clientIP);
+
+        // 휴가 등록
+        scheduleRepository.save(schedule);
+
+        return schedule.getId();
     }
 
     public List<Schedule> findSchedulesByUserNo(Long userNo) {
@@ -112,6 +123,7 @@ public class ScheduleService {
         BigDecimal use = new BigDecimal(0);
 
         List<LocalDate> sources = schedule.getBetweenDates();
+        log.debug("calculateRealUse sources : {}", sources);
 
         List<Holiday> holidays = holidayRepository.findHolidaysByStartEndDate(
                 schedule.getStartDate().format(DateTimeFormatter.BASIC_ISO_DATE),
@@ -124,6 +136,7 @@ public class ScheduleService {
 
         List<LocalDate> targets = schedule.getBetweenDatesByDayOfWeek(new int[]{6, 7});
         targets.addAll(holidayDates);
+        log.debug("calculateRealUse targets : {}", targets);
 
         List<LocalDate> results = subtractDates(sources, targets);
 

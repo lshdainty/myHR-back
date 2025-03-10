@@ -20,5 +20,8 @@ spring:
 
 logging:
   level:
+    com.lshdainty.myhr.api: debug
+    com.lshdainty.myhr.repository: debug
+    com.lshdainty.myhr.service: debug
     org.hibernate.sql: debug           # logger? ?? ?? sql? ??? ??
     org.hibernate.orm.jdbc.bind: trace # ?? ????? ??? ??
