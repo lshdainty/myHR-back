@@ -141,6 +141,7 @@ public class InitDB {
             saveSchedule(1L, 25L,"5시간", ScheduleType.FIVETIMEOFF, LocalDateTime.of(now.getYear(), 8, 30, 13, 0, 0), LocalDateTime.of(now.getYear(), 8, 30, 18, 0, 0));
             saveSchedule(1L, 7L, "오전반차", ScheduleType.MORNINGOFF, LocalDateTime.of(now.getYear(), 10, 15, 9, 0, 0), LocalDateTime.of(now.getYear(), 10, 15, 14, 0, 0));
             saveSchedule(1L, 7L, "오후반차", ScheduleType.AFTERNOONOFF, LocalDateTime.of(now.getYear(), 12, 20, 14, 0, 0), LocalDateTime.of(now.getYear(), 12, 20, 18, 0, 0));
+            saveSchedule(1L, 25L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(now.getYear(), 4, 30, 0, 0, 0), LocalDateTime.of(now.getYear(), 5, 11, 23, 59, 59));
         }
 
         public void saveMember(String name, String birth, String workTime, String employ, String lunar) {

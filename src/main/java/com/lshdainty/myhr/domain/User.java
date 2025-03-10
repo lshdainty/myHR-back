@@ -46,7 +46,7 @@ public class User {
     private String lunarYN;
 
     @OneToMany(mappedBy = "user")   // JPA에서는 mappedBy는 읽기 전용
-    private List<Vacation> vacations =  new ArrayList<>();
+    private List<Vacation> vacations;
 
     // 유저 생성자 (setter말고 해당 메소드 사용할 것)
     public static User addUser(String name, String birth, String employ, String workTime, String lunarYN) {
@@ -57,6 +57,7 @@ public class User {
         user.workTime = workTime;
         user.lunarYN = lunarYN;
         user.delYN = "N";
+        user.vacations = new ArrayList<>();
         return user;
     }
 

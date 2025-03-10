@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -65,14 +68,40 @@ public class Schedule extends AuditingFields {
         this.setDeleted(LocalDateTime.now(), userNo, clientIP);
     }
 
-    // 사용 휴가 계산
-    public static BigDecimal calculateUsed(List<Schedule> schedules) {
-        BigDecimal total = new BigDecimal(0);
+    /* 비즈니스 편의 메소드 */
 
-        for (Schedule schedule : schedules) {
-            total = total.add(schedule.getType().calculate(schedule.getStartDate(), schedule.getEndDate()));
+    /**
+     * 시작, 끝 기간에 해당하는 모든 날짜를 반환하는 함수
+     *
+     * @return 요일에 해당하는 모든 날짜들
+     */
+    public List<LocalDate> getBetweenDates() {
+        return getStartDate().toLocalDate().datesUntil(getEndDate().toLocalDate().plusDays(1))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 시작, 끝 기간에 해당하는 모든 날짜 중 사용자가 선택한 요일에 해당하는 모든 날짜를 반환하는 함수
+     *
+     * @param daysOfWeek int로 된 요일 리스트 (1 월요일 ~ 7 일요일)
+     * @return 요일에 해당하는 모든 날짜들
+     */
+    public List<LocalDate> getBetweenDatesByDayOfWeek(int[] daysOfWeek) {
+        List<LocalDate> dates = new ArrayList<>();
+
+        List<DayOfWeek> targetDays = new ArrayList<>();
+        for (int day : daysOfWeek) {
+            targetDays.add(DayOfWeek.of(day));
         }
 
-        return total;
+        LocalDate checkDay = getStartDate().toLocalDate();
+        while (!checkDay.isAfter(getEndDate().toLocalDate())) {
+            if (targetDays.contains(checkDay.getDayOfWeek())) {
+                dates.add(checkDay);
+            }
+            checkDay = checkDay.plusDays(1);
+        }
+
+        return dates;
     }
 }

@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.function.Function;
 
 @Getter
@@ -42,7 +40,7 @@ public enum ScheduleType {
         this.oldType = oldType;
     }
 
-    public BigDecimal calculate(LocalDateTime start, LocalDateTime end) {
-        return expression.apply(BigDecimal.valueOf(Period.between(start.toLocalDate(), end.toLocalDate()).getDays() + 1));
+    public BigDecimal convertToValue(int dayCount) {
+        return expression.apply(BigDecimal.valueOf(dayCount));
     }
 }
