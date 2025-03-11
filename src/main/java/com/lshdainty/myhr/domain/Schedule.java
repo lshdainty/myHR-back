@@ -10,7 +10,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -71,9 +73,10 @@ public class Schedule extends AuditingFields {
     /* 비즈니스 편의 메소드 */
 
     /**
-     * 시작, 끝 기간에 해당하는 모든 날짜를 반환하는 함수
+     * startDate, endDate 사이의
+     * 모든 날짜들의 목록을 반환
      *
-     * @return 요일에 해당하는 모든 날짜들
+     * @return start ~ end 사이의 모든 날짜들
      */
     public List<LocalDate> getBetweenDates() {
         return getStartDate().toLocalDate().datesUntil(getEndDate().toLocalDate().plusDays(1))
@@ -81,19 +84,19 @@ public class Schedule extends AuditingFields {
     }
 
     /**
-     * 시작, 끝 기간에 해당하는 모든 날짜 중 사용자가 선택한 요일에 해당하는 모든 날짜를 반환하는 함수
+     * 시작, 끝 기간에 해당하는 모든 날짜 중
+     * 사용자가 선택한 요일에 해당하는 모든 날짜를 반환하는 함수
      *
      * @param daysOfWeek int로 된 요일 리스트 (1 월요일 ~ 7 일요일)
      * @return 요일에 해당하는 모든 날짜들
      */
     public List<LocalDate> getBetweenDatesByDayOfWeek(int[] daysOfWeek) {
-        List<LocalDate> dates = new ArrayList<>();
-
         List<DayOfWeek> targetDays = new ArrayList<>();
         for (int day : daysOfWeek) {
             targetDays.add(DayOfWeek.of(day));
         }
 
+        List<LocalDate> dates = new ArrayList<>();
         LocalDate checkDay = getStartDate().toLocalDate();
         while (!checkDay.isAfter(getEndDate().toLocalDate())) {
             if (targetDays.contains(checkDay.getDayOfWeek())) {
@@ -103,5 +106,37 @@ public class Schedule extends AuditingFields {
         }
 
         return dates;
+    }
+
+    /**
+     * 두 날짜 사이에 있는 모든 날짜들에서
+     * 사용자가 넘긴 target을 합친 날짜들을 반환하는 함수
+     *
+     * @param dates 합칠 날짜 리스트들
+     * @return source - target을 한 날짜 리스트 반환
+     */
+    public List<LocalDate> addAllDates(List<LocalDate> dates) {
+        Set<LocalDate> sourceSet = new HashSet<>(getBetweenDates());
+        Set<LocalDate> targetSet = new HashSet<>(dates);
+        sourceSet.addAll(targetSet);
+        return sourceSet.stream()
+                .map(LocalDate::from)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 두 날짜 사이에 있는 모든 날짜들에서
+     * 사용자가 넘긴 target을 제외하고 남은 날짜들만 반환하는 함수
+     *
+     * @param dates 제외할 날짜 리스트들
+     * @return source - target을 한 날짜 리스트 반환
+     */
+    public List<LocalDate> removeAllDates(List<LocalDate> dates) {
+        Set<LocalDate> sourceSet = new HashSet<>(getBetweenDates());
+        Set<LocalDate> targetSet = new HashSet<>(dates);
+        sourceSet.removeAll(targetSet);
+        return sourceSet.stream()
+                .map(LocalDate::from)
+                .collect(Collectors.toList());
     }
 }
