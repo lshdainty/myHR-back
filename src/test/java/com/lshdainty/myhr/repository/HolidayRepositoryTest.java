@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Import(HolidayRepository.class)
 @Transactional
-@DisplayName("JPA 휴일 레포지토리 테스트")
+@DisplayName("JPA 공휴일 레포지토리 테스트")
 class HolidayRepositoryTest {
     @Autowired
     private HolidayRepository holidayRepository;
