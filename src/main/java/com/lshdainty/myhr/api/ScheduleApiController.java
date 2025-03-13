@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.lshdainty.myhr.domain.Schedule;
 import com.lshdainty.myhr.domain.ScheduleType;
+import com.lshdainty.myhr.dto.ScheduleDto;
 import com.lshdainty.myhr.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
@@ -23,41 +24,41 @@ public class ScheduleApiController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/api/v1/schedule")
-    public ApiResponse addSchedule(@RequestBody ScheduleReq scheduleReq, HttpServletRequest req) {
+    public ApiResponse addSchedule(@RequestBody ScheduleDto scheduleDto, HttpServletRequest req) {
         Long scheduleId = null;
 
-        if (scheduleReq.getScheduleType().isVacationType()) {
+        if (scheduleDto.getScheduleType().isVacationType()) {
             scheduleId = scheduleService.addSchedule(
-                    scheduleReq.getUserNo(),
-                    scheduleReq.getVacationId(),
-                    scheduleReq.getScheduleType(),
-                    scheduleReq.getScheduleDesc(),
-                    scheduleReq.getStartDate(),
-                    scheduleReq.getEndDate(),
+                    scheduleDto.getUserNo(),
+                    scheduleDto.getVacationId(),
+                    scheduleDto.getScheduleType(),
+                    scheduleDto.getScheduleDesc(),
+                    scheduleDto.getStartDate(),
+                    scheduleDto.getEndDate(),
                     0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                     req.getRemoteAddr()
             );
         } else {
             scheduleId = scheduleService.addSchedule(
-                    scheduleReq.getUserNo(),
-                    scheduleReq.getScheduleType(),
-                    scheduleReq.getScheduleDesc(),
-                    scheduleReq.getStartDate(),
-                    scheduleReq.getEndDate(),
+                    scheduleDto.getUserNo(),
+                    scheduleDto.getScheduleType(),
+                    scheduleDto.getScheduleDesc(),
+                    scheduleDto.getStartDate(),
+                    scheduleDto.getEndDate(),
                     0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                     req.getRemoteAddr()
             );
         }
 
-        return ApiResponse.success(new ScheduleResp(scheduleId));
+        return ApiResponse.success(new ScheduleDto(scheduleId));
     }
 
     @GetMapping("/api/v1/schedules/user/{userNo}")
     public ApiResponse getSchedulesByUser(@PathVariable("userNo") Long userNo) {
         List<Schedule> schedules = scheduleService.findSchedulesByUserNo(userNo);
 
-        List<ScheduleResp> resp = schedules.stream()
-                .map(s -> new ScheduleResp(s))
+        List<ScheduleDto> resp = schedules.stream()
+                .map(s -> new ScheduleDto(s))
                 .collect(Collectors.toList());
 
         return ApiResponse.success(resp);
@@ -68,43 +69,5 @@ public class ScheduleApiController {
         Long delUserNo = 0L;   // 추후 로그인 한 사람의 id를 가져와서 삭제한 사람의 userNo에 세팅
         scheduleService.deleteSchedule(scheduleId, delUserNo, req.getRemoteAddr());
         return ApiResponse.success();
-    }
-
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    static class ScheduleReq {
-        private Long userNo;
-        private Long vacationId;
-        private ScheduleType scheduleType;
-        private String scheduleDesc;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
-    }
-
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    static class ScheduleResp {
-        private Long scheduleId;
-        private Long userNo;
-        private Long vacationId;
-        private ScheduleType scheduleType;
-        private String scheduleDesc;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
-
-        public ScheduleResp(Long id) { scheduleId = id; }
-
-        public ScheduleResp(Schedule schedule) {
-            scheduleId = schedule.getId();
-            userNo = schedule.getUser().getId();
-            if (schedule.getType().isVacationType()) {
-                vacationId = schedule.getVacation().getId();
-            }
-            scheduleType = schedule.getType();
-            scheduleDesc = schedule.getDesc();
-            startDate = schedule.getStartDate();
-            endDate = schedule.getEndDate();
-        }
     }
 }
