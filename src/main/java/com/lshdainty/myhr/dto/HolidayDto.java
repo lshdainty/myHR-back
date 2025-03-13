@@ -1,0 +1,38 @@
+package com.lshdainty.myhr.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.lshdainty.myhr.domain.Holiday;
+import com.lshdainty.myhr.domain.Recommend;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class HolidayDto {
+    private Long holidaySeq;
+    private String holidayName;
+    private String holidayDate;
+    private String holidayType;
+
+    public HolidayDto(Long seq) {
+        this.holidaySeq = seq;
+    }
+
+    public HolidayDto(Holiday holiday) {
+        this.holidaySeq = holiday.getSeq();
+        this.holidayName = holiday.getName();
+        this.holidayDate = holiday.getDate();
+        this.holidayType = "holiday";
+    }
+
+    public HolidayDto(Recommend recommend) {
+        this.holidaySeq = recommend.getSeq();
+        this.holidayName = recommend.getName();
+        this.holidayDate = recommend.getDate();
+        this.holidayType = "recommend";
+    }
+}

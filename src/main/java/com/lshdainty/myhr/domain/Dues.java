@@ -20,8 +20,9 @@ public class Dues {
     @Column(name = "dues_amount")
     private int amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "dues_type")
-    private String type;
+    private DuesType type;
 
     @Column(name = "dues_date")
     private String date;
@@ -30,7 +31,7 @@ public class Dues {
     private String detail;
 
     // 회비 생성자  (setter말고 해당 메소드 사용할 것)
-    public static Dues createDues(String name, int amount, String type, String date, String detail) {
+    public static Dues createDues(String name, int amount, DuesType type, String date, String detail) {
         Dues dues = new Dues();
         dues.userName = name;
         dues.amount = amount;

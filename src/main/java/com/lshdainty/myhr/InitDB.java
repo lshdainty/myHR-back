@@ -23,6 +23,7 @@ public class InitDB {
         initService.initSetRecommend();
         initService.initSetVacation();
         initService.initSetSchedule();
+        initService.initSetDues();
     }
 
     @Component
@@ -143,6 +144,19 @@ public class InitDB {
             saveSchedule(1L, 25L, "휴가", ScheduleType.DAYOFF, LocalDateTime.of(now.getYear(), 4, 30, 0, 0, 0), LocalDateTime.of(now.getYear(), 5, 11, 23, 59, 59));
         }
 
+        public void initSetDues() {
+            saveDues("이서준", 10000, DuesType.PLUS, "20250104", "생일비");
+            saveDues("김서연", 10000, DuesType.PLUS, "20250104", "생일비");
+            saveDues("김지후", 10000, DuesType.PLUS, "20250104", "생일비");
+            saveDues("이준우", 10000, DuesType.PLUS, "20250104", "생일비");
+            saveDues("조민서", 80000, DuesType.MINUS, "20250131", "생일비 출금");
+            saveDues("이하은", 10000, DuesType.PLUS, "20250204", "생일비");
+            saveDues("김서연", 10000, DuesType.PLUS, "20250204", "생일비");
+            saveDues("김지후", 10000, DuesType.PLUS, "20250204", "생일비");
+            saveDues("이준우", 10000, DuesType.PLUS, "20250204", "생일비");
+            saveDues("조민서", 30000, DuesType.MINUS, "20250228", "생일비 출금");
+        }
+
         public void saveMember(String name, String birth, String workTime, String employ, String lunar) {
             User user = User.createUser(name, birth, employ, workTime, lunar);
             em.persist(user);
@@ -169,6 +183,11 @@ public class InitDB {
             Vacation vacation = em.find(Vacation.class, vacationId);
             Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, startDate, endDate, 0L, "127.0.0.1");
             em.persist(schedule);
+        }
+
+        public void saveDues(String userName, int amount, DuesType type, String date, String detail) {
+            Dues dues = Dues.createDues(userName, amount, type, date, detail);
+            em.persist(dues);
         }
     }
 }

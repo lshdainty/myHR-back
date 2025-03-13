@@ -30,7 +30,7 @@ public class DuesRepository {
 
     // 년도에 해당하는 회비 조회
     public List<Dues> findDuesByYear(String year) {
-        return em.createQuery("select d from Dues d where YEAR(d.date) = :year order by d.date", Dues.class)
+        return em.createQuery("select d from Dues d where substring(d.date, 0, 4) = :year order by d.date", Dues.class)
                 .setParameter("year", year)
                 .getResultList();
     }
