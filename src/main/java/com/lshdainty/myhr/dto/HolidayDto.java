@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.lshdainty.myhr.domain.Holiday;
-import com.lshdainty.myhr.domain.Recommend;
+import com.lshdainty.myhr.domain.HolidayType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +16,7 @@ public class HolidayDto {
     private Long holidaySeq;
     private String holidayName;
     private String holidayDate;
-    private String holidayType;
+    private HolidayType holidayType;
 
     public HolidayDto(Long seq) {
         this.holidaySeq = seq;
@@ -26,13 +26,6 @@ public class HolidayDto {
         this.holidaySeq = holiday.getSeq();
         this.holidayName = holiday.getName();
         this.holidayDate = holiday.getDate();
-        this.holidayType = "holiday";
-    }
-
-    public HolidayDto(Recommend recommend) {
-        this.holidaySeq = recommend.getSeq();
-        this.holidayName = recommend.getName();
-        this.holidayDate = recommend.getDate();
-        this.holidayType = "recommend";
+        this.holidayType = holiday.getType();
     }
 }

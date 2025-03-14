@@ -1,12 +1,8 @@
 package com.lshdainty.myhr.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.lshdainty.myhr.domain.User;
 import com.lshdainty.myhr.dto.UserDto;
 import com.lshdainty.myhr.service.UserService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +41,7 @@ public class UserApiController {
         List<User> users = userService.findUsers();
 
         List<UserDto> resps = users.stream()
-                .map(u -> new UserDto(u))
+                .map(UserDto::new)
                 .collect(Collectors.toList());
 
         return ApiResponse.success(resps);
@@ -63,6 +59,7 @@ public class UserApiController {
         );
 
         User findUser = userService.findUser(userId);
+
         return ApiResponse.success(new UserDto(findUser));
     }
 

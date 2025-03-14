@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.lshdainty.myhr.domain.User;
 import com.lshdainty.myhr.domain.Vacation;
 import com.lshdainty.myhr.domain.VacationType;
+import com.lshdainty.myhr.dto.UserDto;
+import com.lshdainty.myhr.dto.VacationDto;
 import com.lshdainty.myhr.service.VacationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
@@ -26,28 +28,28 @@ public class VacationApiController {
     private final VacationService vacationService;
 
     @PostMapping("/api/v1/vacation")
-    public ApiResponse addVacation(@RequestBody VacationReq vacationReq, HttpServletRequest req) {
+    public ApiResponse addVacation(@RequestBody VacationDto vacationDto, HttpServletRequest req) {
         Long vacationId = vacationService.addVacation(
-                vacationReq.getUserNo(),
-                vacationReq.getVacationName(),
-                vacationReq.getVacationDesc(),
-                vacationReq.getVacationType(),
-                vacationReq.getGrantTime(),
-                vacationReq.getOccurDate(),
-                vacationReq.getExpiryDate(),
+                vacationDto.getUserNo(),
+                vacationDto.getVacationName(),
+                vacationDto.getVacationDesc(),
+                vacationDto.getVacationType(),
+                vacationDto.getGrantTime(),
+                vacationDto.getOccurDate(),
+                vacationDto.getExpiryDate(),
                 0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                 req.getRemoteAddr()
         );
 
-        return ApiResponse.success(new VacationResp(vacationId));
+        return ApiResponse.success(new VacationDto(vacationId));
     }
 
     @GetMapping("/api/v1/vacations/user/{userNo}")
     public ApiResponse getVacationsByUser(@PathVariable("userNo") Long userNo) {
         List<Vacation> vacations = vacationService.findVacationsByUser(userNo);
 
-        List<VacationResp> resp = vacations.stream()
-                .map(v -> new VacationResp(v))
+        List<VacationDto> resp = vacations.stream()
+                .map(v -> new VacationDto(v))
                 .collect(Collectors.toList());
 
         return ApiResponse.success(resp);
@@ -57,29 +59,34 @@ public class VacationApiController {
     public ApiResponse getVacationsByUserGroup() {
         List<User> usersVacations = vacationService.findVacationsByUserGroup();
 
-        List<UserVacationsResp> resp = usersVacations.stream()
-                .map(u -> new UserVacationsResp(u))
-                .collect(Collectors.toList());
+        List<UserDto> resp = new ArrayList<>();
+        for (User user : usersVacations) {
+            List<VacationDto> vacations = user.getVacations().stream()
+                    .map(VacationDto::new)
+                    .toList();
+
+            resp.add(new UserDto(user, vacations));
+        }
 
         return ApiResponse.success(resp);
     }
 
     @PutMapping("/api/v1/vacation/{id}")
-    public ApiResponse editVacation(@PathVariable("id") Long vacationId, @RequestBody VacationReq vacationReq, HttpServletRequest req) {
+    public ApiResponse editVacation(@PathVariable("id") Long vacationId, @RequestBody VacationDto vacationDto, HttpServletRequest req) {
         Vacation vacation = vacationService.editVacation(
                 vacationId,
-                vacationReq.getUserNo(),
-                vacationReq.getVacationName(),
-                vacationReq.getVacationDesc(),
-                vacationReq.getVacationType(),
-                vacationReq.getGrantTime(),
-                vacationReq.getOccurDate(),
-                vacationReq.getExpiryDate(),
+                vacationDto.getUserNo(),
+                vacationDto.getVacationName(),
+                vacationDto.getVacationDesc(),
+                vacationDto.getVacationType(),
+                vacationDto.getGrantTime(),
+                vacationDto.getOccurDate(),
+                vacationDto.getExpiryDate(),
                 0L, // 추후 로그인한 유저의 id를 가져와서 여기에다 넣을 것
                 req.getRemoteAddr()
         );
 
-        return ApiResponse.success(new VacationResp(vacation));
+        return ApiResponse.success(new VacationDto(vacation));
     }
 
     @DeleteMapping("/api/v1/vacation/{id}")
@@ -87,68 +94,5 @@ public class VacationApiController {
         Long delUserNo = 0L;   // 추후 로그인 한 사람의 id를 가져와서 삭제한 사람의 userNo에 세팅
         vacationService.deleteVacation(vacationId, delUserNo, req.getRemoteAddr());
         return ApiResponse.success();
-    }
-
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    static class VacationReq {
-        private Long userNo;
-        private String vacationName;
-        private String vacationDesc;
-        private VacationType vacationType;
-        private BigDecimal grantTime;
-        private LocalDateTime occurDate;
-        private LocalDateTime expiryDate;
-    }
-
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    static class UserVacationsResp {
-        private Long userNo;
-        private String userName;
-        private BigDecimal standardTime; // 기본 휴가
-        private BigDecimal addedTime;    // 추가 휴가
-        private List<VacationResp> vacations = new ArrayList<>();
-
-        public UserVacationsResp(User user) {
-            userNo = user.getId();
-            userName = user.getName();
-            vacations = user.getVacations().stream().map(v -> new VacationResp(v)).collect(Collectors.toList());
-
-            vacations.forEach(v -> {
-                if (v.getVacationType().equals(VacationType.BASIC)) {
-                    standardTime = standardTime.add(v.getGrantTime());
-                } else if (v.getVacationType().equals(VacationType.ADDED)) {
-                    addedTime = addedTime.add(v.getGrantTime());
-                }
-            });
-        }
-    }
-
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    static class VacationResp {
-        private Long vacationId;
-        private String vacationName;
-        private String vacationDesc;
-        private VacationType vacationType;
-        private BigDecimal grantTime;
-        private LocalDateTime occurDate;
-        private LocalDateTime expiryDate;
-
-        public VacationResp(Long id) {
-            vacationId = id;
-        }
-
-        public VacationResp(Vacation vacation) {
-            vacationName = vacation.getName();
-            vacationId = vacation.getId();
-            vacationDesc = vacation.getDesc();
-            vacationType = vacation.getType();
-            grantTime = vacation.getGrantTime();
-            occurDate = vacation.getOccurDate();
-            expiryDate = vacation.getExpiryDate();
-        }
     }
 }

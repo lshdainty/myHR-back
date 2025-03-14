@@ -24,17 +24,23 @@ public class Holiday {
     @NotNull
     private String date;
 
+    @Column(name = "holiday_type")
+    @NotNull
+    private HolidayType type;
+
     // 휴일 생성자 (setter말고 해당 메소드 사용할 것)
-    public static Holiday createHoliday(String name, String date) {
+    public static Holiday createHoliday(String name, String date, HolidayType type) {
         Holiday holiday = new Holiday();
         holiday.name = name;
         holiday.date = date;
+        holiday.type = type;
         return holiday;
     }
 
     // 휴일 수정 (setter말고 해당 메소드 사용할 것)
-    public void updateHoliday(String name, String date) {
+    public void updateHoliday(String name, String date, HolidayType type) {
         if (!Objects.isNull(name)) { this.name = name; }
         if (!Objects.isNull(date)) { this.date = date; }
+        if (!Objects.isNull(type)) { this.type = type; }
     }
 }

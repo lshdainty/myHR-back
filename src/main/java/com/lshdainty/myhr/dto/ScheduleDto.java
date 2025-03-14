@@ -3,8 +3,6 @@ package com.lshdainty.myhr.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.lshdainty.myhr.domain.Dues;
-import com.lshdainty.myhr.domain.DuesType;
 import com.lshdainty.myhr.domain.Schedule;
 import com.lshdainty.myhr.domain.ScheduleType;
 import lombok.Data;

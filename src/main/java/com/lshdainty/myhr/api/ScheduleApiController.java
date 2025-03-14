@@ -1,19 +1,13 @@
 package com.lshdainty.myhr.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.lshdainty.myhr.domain.Schedule;
-import com.lshdainty.myhr.domain.ScheduleType;
 import com.lshdainty.myhr.dto.ScheduleDto;
 import com.lshdainty.myhr.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

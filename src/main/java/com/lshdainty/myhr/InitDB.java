@@ -20,7 +20,6 @@ public class InitDB {
     public void init() {
         initService.initSetMember();
         initService.initSetHoliday();
-        initService.initSetRecommend();
         initService.initSetVacation();
         initService.initSetSchedule();
         initService.initSetDues();
@@ -42,38 +41,36 @@ public class InitDB {
         }
 
         public void initSetHoliday() {
-            saveHoliday("신정", "20250101");
-            saveHoliday("임시공휴일(설날)", "20250127");
-            saveHoliday("설날연휴", "20250128");
-            saveHoliday("설날", "20250129");
-            saveHoliday("설날연휴", "20250130");
-            saveHoliday("삼일절", "20250301");
-            saveHoliday("대체공휴일(삼일절)", "20250303");
-            saveHoliday("근로자의 날", "20250501");
-            saveHoliday("어린이날", "20250505");
-            saveHoliday("대체공휴일(석가탄신일)", "20250506");
-            saveHoliday("현충일", "20250606");
-            saveHoliday("광복절", "20250815");
-            saveHoliday("개천절", "20251003");
-            saveHoliday("추석연휴", "20251005");
-            saveHoliday("추석", "20251006");
-            saveHoliday("추석연휴", "20251007");
-            saveHoliday("대체공휴일(추석)", "20251008");
-            saveHoliday("한글날", "20251009");
-            saveHoliday("크리스마스", "20251225");
-        }
+            saveHoliday("신정", "20250101", HolidayType.PUBLIC);
+            saveHoliday("임시공휴일(설날)", "20250127", HolidayType.PUBLIC);
+            saveHoliday("설날연휴", "20250128", HolidayType.PUBLIC);
+            saveHoliday("설날", "20250129", HolidayType.PUBLIC);
+            saveHoliday("설날연휴", "20250130", HolidayType.PUBLIC);
+            saveHoliday("삼일절", "20250301", HolidayType.PUBLIC);
+            saveHoliday("대체공휴일(삼일절)", "20250303", HolidayType.PUBLIC);
+            saveHoliday("근로자의 날", "20250501", HolidayType.PUBLIC);
+            saveHoliday("어린이날", "20250505", HolidayType.PUBLIC);
+            saveHoliday("대체공휴일(석가탄신일)", "20250506", HolidayType.PUBLIC);
+            saveHoliday("현충일", "20250606", HolidayType.PUBLIC);
+            saveHoliday("광복절", "20250815", HolidayType.PUBLIC);
+            saveHoliday("개천절", "20251003", HolidayType.PUBLIC);
+            saveHoliday("추석연휴", "20251005", HolidayType.PUBLIC);
+            saveHoliday("추석", "20251006", HolidayType.PUBLIC);
+            saveHoliday("추석연휴", "20251007", HolidayType.PUBLIC);
+            saveHoliday("대체공휴일(추석)", "20251008", HolidayType.PUBLIC);
+            saveHoliday("한글날", "20251009", HolidayType.PUBLIC);
+            saveHoliday("크리스마스", "20251225", HolidayType.PUBLIC);
 
-        public void initSetRecommend() {
-            saveRecommend("권장휴가", "20250131");
-            saveRecommend("권장휴가", "20250304");
-            saveRecommend("권장휴가", "20250404");
-            saveRecommend("권장휴가", "20250502");
-            saveRecommend("권장휴가", "20250523");
-            saveRecommend("권장휴가", "20250704");
-            saveRecommend("권장휴가", "20250814");
-            saveRecommend("권장휴가", "20250905");
-            saveRecommend("권장휴가", "20251010");
-            saveRecommend("권장휴가", "20251114");
+            saveHoliday("권장휴가", "20250131", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250304", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250404", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250502", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250523", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250704", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250814", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20250905", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20251010", HolidayType.RECOMMEND);
+            saveHoliday("권장휴가", "20251114", HolidayType.RECOMMEND);
         }
 
         public void initSetVacation() {
@@ -162,14 +159,9 @@ public class InitDB {
             em.persist(user);
         }
 
-        public void saveHoliday(String name, String date) {
-            Holiday holiday = Holiday.createHoliday(name, date);
+        public void saveHoliday(String name, String date, HolidayType type) {
+            Holiday holiday = Holiday.createHoliday(name, date, type);
             em.persist(holiday);
-        }
-
-        public void saveRecommend(String name, String date) {
-            Recommend recommend = Recommend.createRecommend(name, date);
-            em.persist(recommend);
         }
 
         public void saveVacation(Long userNo, String name, String desc, VacationType type, BigDecimal grantTime, LocalDateTime expiryDate, LocalDateTime occurDate) {

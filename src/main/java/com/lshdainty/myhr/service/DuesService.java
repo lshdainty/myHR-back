@@ -2,11 +2,7 @@ package com.lshdainty.myhr.service;
 
 import com.lshdainty.myhr.domain.Dues;
 import com.lshdainty.myhr.domain.DuesType;
-import com.lshdainty.myhr.domain.Holiday;
-import com.lshdainty.myhr.domain.Recommend;
 import com.lshdainty.myhr.repository.DuesRepository;
-import com.lshdainty.myhr.repository.HolidayRepository;
-import com.lshdainty.myhr.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

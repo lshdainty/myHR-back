@@ -1,6 +1,7 @@
 package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Holiday;
+import com.lshdainty.myhr.domain.HolidayType;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,13 @@ public class HolidayRepository {
         return em.createQuery("select h from Holiday h where h.date between :start and :end order by h.date", Holiday.class)
                 .setParameter("start", start)
                 .setParameter("end", end)
+                .getResultList();
+    }
+
+    // 휴일 타입에 따른 조회
+    public List<Holiday> findHolidaysByType(HolidayType type) {
+        return em.createQuery("select h from Holiday h where h.type = :type", Holiday.class)
+                .setParameter("type", type)
                 .getResultList();
     }
 
