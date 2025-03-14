@@ -29,7 +29,7 @@ class UserRepositoryTest {
     private EntityManager em;
 
     @Test
-    @DisplayName("유저 등록")
+    @DisplayName("유저 등록 및 단일 조회")
     void save() {
         // given
         String name = "홍길동";
@@ -42,36 +42,11 @@ class UserRepositoryTest {
 
         // when
         userRepository.save(user);
-
-        User findUser = userRepository.findById(user.getId());
-
-        // then
-        assertThat(findUser).isEqualTo(user);
-        assertThat(findUser.getName()).isEqualTo(name);
-        assertThat(findUser.getBirth()).isEqualTo(birth);
-        assertThat(findUser.getEmploy()).isEqualTo(employ);
-        assertThat(findUser.getWorkTime()).isEqualTo(workTime);
-        assertThat(findUser.getLunarYN()).isEqualTo(lunarYN);
-    }
-
-    @Test
-    @DisplayName("단일 유저 조회")
-    void getUser() {
-        // given
-        String name = "홍길동";
-        String birth = "19700204";
-        String employ = "BP";
-        String workTime = "9 ~ 6";
-        String lunarYN = "N";
-
-        User user = User.createUser(name, birth, employ, workTime, lunarYN);
-        userRepository.save(user);
-
-        // when
-        User findUser = userRepository.findById(user.getId());
+        em.flush();
+        em.clear();
 
         // then
-        assertThat(findUser).isEqualTo(user);
+        User findUser = userRepository.findById(user.getId());
         assertThat(findUser.getName()).isEqualTo(name);
         assertThat(findUser.getBirth()).isEqualTo(birth);
         assertThat(findUser.getEmploy()).isEqualTo(employ);
@@ -99,6 +74,8 @@ class UserRepositoryTest {
 
         // then
         assertThat(users.size()).isEqualTo(names.length);
+        assertThat(users).extracting("name").containsExactlyInAnyOrder("김서연", "김지후", "이서준");
+        assertThat(users).extracting("birth").containsExactlyInAnyOrder("19700723", "19701026", "19740115");
     }
 
     @Test
@@ -116,9 +93,11 @@ class UserRepositoryTest {
 
         // when
         user.deleteUser();
-        User findUser = userRepository.findById(user.getId());
+        em.flush();
+        em.clear();
 
         // then
+        User findUser = userRepository.findById(user.getId());
         assertThat(findUser.getDelYN()).isEqualTo("Y");
     }
 
@@ -140,9 +119,11 @@ class UserRepositoryTest {
 
         // when
         user.updateUser(name, birth, employ, workTime, lunarYN);
-        User findUser = userRepository.findById(user.getId());
+        em.flush();
+        em.clear();
 
         // then
+        User findUser = userRepository.findById(user.getId());
         assertThat(findUser.getName()).isEqualTo(name);
         assertThat(findUser.getBirth()).isEqualTo(birth);
         assertThat(findUser.getEmploy()).isEqualTo(employ);
@@ -151,7 +132,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("유저가 가지고 있는 휴가 리스트 조회")
+    @DisplayName("유저 각각이 가지고 있는 휴가 리스트 조회")
     void getUserWithVacations() {
         // given
         User userA = User.createUser("이서준", "19700723", "9 ~ 6", "ADMIN", "N");
