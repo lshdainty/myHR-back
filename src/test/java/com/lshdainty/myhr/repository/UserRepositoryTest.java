@@ -29,7 +29,7 @@ class UserRepositoryTest {
     private EntityManager em;
 
     @Test
-    @DisplayName("유저 등록 및 단일 조회")
+    @DisplayName("유저 등록 및 단건 조회")
     void save() {
         // given
         String name = "홍길동";
@@ -47,6 +47,7 @@ class UserRepositoryTest {
 
         // then
         User findUser = userRepository.findById(user.getId());
+        assertThat(findUser).isNotNull();
         assertThat(findUser.getName()).isEqualTo(name);
         assertThat(findUser.getBirth()).isEqualTo(birth);
         assertThat(findUser.getEmploy()).isEqualTo(employ);
@@ -74,8 +75,11 @@ class UserRepositoryTest {
 
         // then
         assertThat(users.size()).isEqualTo(names.length);
-        assertThat(users).extracting("name").containsExactlyInAnyOrder("김서연", "김지후", "이서준");
-        assertThat(users).extracting("birth").containsExactlyInAnyOrder("19700723", "19701026", "19740115");
+        assertThat(users).extracting("name").containsExactlyInAnyOrder(names);
+        assertThat(users).extracting("birth").containsExactlyInAnyOrder(births);
+        assertThat(users).extracting("employ").containsExactlyInAnyOrder(employs);
+        assertThat(users).extracting("workTime").containsExactlyInAnyOrder(workTimes);
+        assertThat(users).extracting("lunarYN").containsExactlyInAnyOrder(lunarYNs);
     }
 
     @Test

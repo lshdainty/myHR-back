@@ -2,6 +2,7 @@ package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Dues;
 import com.lshdainty.myhr.domain.DuesType;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 @Import(DuesRepository.class)
@@ -22,8 +22,11 @@ class DuesRepositoryTest {
     @Autowired
     private DuesRepository duesRepository;
 
+    @Autowired
+    private EntityManager em;
+
     @Test
-    @DisplayName("회비 저장")
+    @DisplayName("회비 저장 및 단건 조회")
     void save() {
         // given
         String userName = "이서준";
@@ -36,36 +39,12 @@ class DuesRepositoryTest {
 
         // when
         duesRepository.save(dues);
-
-        Dues findDues = duesRepository.findById(dues.getSeq());
-
-        // then
-        assertThat(findDues).isEqualTo(dues);
-        assertThat(findDues.getUserName()).isEqualTo(userName);
-        assertThat(findDues.getAmount()).isEqualTo(amount);
-        assertThat(findDues.getType()).isEqualTo(type);
-        assertThat(findDues.getDate()).isEqualTo(date);
-        assertThat(findDues.getDetail()).isEqualTo(detail);
-    }
-
-    @Test
-    @DisplayName("단일 회비 조회")
-    void findById() {
-        // given
-        String userName = "이서준";
-        int amount = 10000;
-        DuesType type = DuesType.PLUS;
-        String date = "20250120";
-        String detail = "1월 생일 회비";
-
-        Dues dues = Dues.createDues(userName, amount, type, date, detail);
-        duesRepository.save(dues);
-
-        // when
-        Dues findDues = duesRepository.findById(dues.getSeq());
+        em.flush();
+        em.clear();
 
         // then
-        assertThat(findDues).isEqualTo(dues);
+        Dues findDues = duesRepository.findById(dues.getSeq());
+        assertThat(findDues).isNotNull();
         assertThat(findDues.getUserName()).isEqualTo(userName);
         assertThat(findDues.getAmount()).isEqualTo(amount);
         assertThat(findDues.getType()).isEqualTo(type);
@@ -88,19 +67,16 @@ class DuesRepositoryTest {
             duesRepository.save(dues);
         }
 
-        double random = Math.random();
-        int idx = (int)(random * 2);    // 0~2
-
         // when
-        List<Dues> dues = duesRepository.findDues();    // order로 정렬하므로 배열 idx와 같아야함
+        List<Dues> dues = duesRepository.findDues();
 
         // then
         assertThat(dues.size()).isEqualTo(names.length);
-        assertThat(dues.get(idx).getUserName()).isEqualTo(names[idx]);
-        assertThat(dues.get(idx).getAmount()).isEqualTo(amounts[idx]);
-        assertThat(dues.get(idx).getType()).isEqualTo(types[idx]);
-        assertThat(dues.get(idx).getDate()).isEqualTo(dates[idx]);
-        assertThat(dues.get(idx).getDetail()).isEqualTo(details[idx]);
+        assertThat(dues).extracting("userName").containsExactlyInAnyOrder(names);
+        assertThat(dues).extracting("amount").containsExactlyInAnyOrder(10000, 80000, 10000);
+        assertThat(dues).extracting("type").containsExactlyInAnyOrder(types);
+        assertThat(dues).extracting("date").containsExactlyInAnyOrder(dates);
+        assertThat(dues).extracting("detail").containsExactlyInAnyOrder(details);
     }
 
     @Test
@@ -123,6 +99,12 @@ class DuesRepositoryTest {
 
         // then
         assertThat(dues.size()).isEqualTo(2);
+        // 쿼리에서 날짜 기준으로 정렬하므로 순서까지 맞아야함
+        assertThat(dues).extracting("userName").containsExactly("조민서" ,"이준우");
+        assertThat(dues).extracting("amount").containsExactly(80000, 10000);
+        assertThat(dues).extracting("type").containsExactly(DuesType.MINUS, DuesType.PLUS);
+        assertThat(dues).extracting("date").containsExactly("20250131", "20250204");
+        assertThat(dues).extracting("detail").containsExactly("생일비 출금", "생일비");
     }
 
     @Test
@@ -140,9 +122,11 @@ class DuesRepositoryTest {
 
         // when
         duesRepository.delete(dues);
-        Dues findDues = duesRepository.findById(dues.getSeq());
+        em.flush();
+        em.clear();
 
         // then
-        assertThat(Objects.isNull(findDues)).isEqualTo(true);
+        Dues findDues = duesRepository.findById(dues.getSeq());
+        assertThat(findDues).isNull();
     }
 }
