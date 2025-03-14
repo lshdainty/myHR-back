@@ -2,11 +2,11 @@ package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Dues;
 import com.lshdainty.myhr.domain.DuesType;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +23,7 @@ class DuesRepositoryTest {
     private DuesRepository duesRepository;
 
     @Autowired
-    private EntityManager em;
+    private TestEntityManager em;
 
     @Test
     @DisplayName("회비 저장 및 단건 조회")

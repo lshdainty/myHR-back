@@ -29,7 +29,7 @@ public class VacationRepositoryTest {
     private EntityManager em;
 
     @Test
-    @DisplayName("휴가 저장")
+    @DisplayName("휴가 저장 및 단건 조회")
     void save() {
         // given
         User user = User.createUser("이서준", "19700723", "9 ~ 6", "ADMIN", "N");
@@ -71,7 +71,7 @@ public class VacationRepositoryTest {
 
         LocalDateTime now = LocalDateTime.now();
         String[] names = {"1분기 휴가", "OT 정산"};
-        String[] descs = {"", ""};
+        String[] descs = {"1분기 휴가부여", "야간 배포에 따른 OT정산"};
         VacationType[] types = {VacationType.BASIC, VacationType.ADDED};
         BigDecimal[] grantTimes = {new BigDecimal("32.0000"), new BigDecimal("1.0000")};
         LocalDateTime[] occurDates = {
@@ -93,8 +93,12 @@ public class VacationRepositoryTest {
 
         // then
         assertThat(vacations.size()).isEqualTo(2);
-        assertThat(vacations).extracting("name").containsExactlyInAnyOrder("1분기 휴가", "OT 정산");
-        assertThat(vacations).extracting("type").containsExactlyInAnyOrder(VacationType.ADDED, VacationType.BASIC);
+        assertThat(vacations).extracting("name").containsExactlyInAnyOrder(names);
+        assertThat(vacations).extracting("desc").containsExactlyInAnyOrder(descs);
+        assertThat(vacations).extracting("type").containsExactlyInAnyOrder(types);
+        assertThat(vacations).extracting("grantTime").containsExactlyInAnyOrder(grantTimes);
+        assertThat(vacations).extracting("occurDate").containsExactlyInAnyOrder(occurDates);
+        assertThat(vacations).extracting("expiryDate").containsExactlyInAnyOrder(expiryDates);
     }
 
     @Test
@@ -167,5 +171,33 @@ public class VacationRepositoryTest {
         assertThat(vacations.get(0).getName()).isEqualTo("올해 1분기 휴가");
         assertThat(vacations.get(0).getOccurDate()).isEqualTo(occurDates[1]);
         assertThat(vacations.get(0).getExpiryDate()).isEqualTo(expiryDates[1]);
+    }
+
+    @Test
+    @DisplayName("휴가 삭제")
+    void deleteVacation() {
+        // given
+        User user = User.createUser("이서준", "19700723", "9 ~ 6", "ADMIN", "N");
+        em.persist(user);
+
+        LocalDateTime now = LocalDateTime.now();
+        String name = "1분기 휴가";
+        String desc = "";
+        VacationType type = VacationType.BASIC;
+        BigDecimal grantTime = new BigDecimal("32.0000");
+        LocalDateTime occurDate = LocalDateTime.of(now.getYear(), 1, 1, 0, 0, 0);
+        LocalDateTime expiryDate = LocalDateTime.of(now.getYear(), 12, 31, 23, 59, 59);
+
+        Vacation vacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, 0L, "");
+        vacationRepository.save(vacation);
+
+        // when
+        vacation.deleteVacation(0L, "");
+        em.flush();
+        em.clear();
+
+        // then
+        Vacation findVacation = vacationRepository.findById(vacation.getId());
+        assertThat(findVacation.getDelYN()).isEqualTo("Y");
     }
 }

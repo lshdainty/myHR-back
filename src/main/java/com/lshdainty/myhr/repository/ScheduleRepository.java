@@ -33,9 +33,10 @@ public class ScheduleRepository {
     }
 
     // 기간에 해당하는 스케줄 조회
-    public List<Schedule> findSchedulesByStartDate(LocalDateTime startDate) {
-        return em.createQuery("select s from Schedule s where s.startDate >= :startDate and s.delYN = :delYN", Schedule.class)
-                .setParameter("startDate", startDate)
+    public List<Schedule> findSchedulesByPeriod(LocalDateTime start, LocalDateTime end) {
+        return em.createQuery("select s from Schedule s where s.startDate between :start and :end and s.delYN = :delYN", Schedule.class)
+                .setParameter("start", start)
+                .setParameter("end", end)
                 .setParameter("delYN", "N")
                 .getResultList();
     }
