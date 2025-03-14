@@ -2,6 +2,7 @@ package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Holiday;
 import com.lshdainty.myhr.domain.HolidayType;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,11 @@ class HolidayRepositoryTest {
     @Autowired
     private HolidayRepository holidayRepository;
 
+    @Autowired
+    private EntityManager em;
+
     @Test
-    @DisplayName("휴일 저장")
+    @DisplayName("휴일 저장 및 단건 조회")
     void save() {
         // given
         String name = "신정";
@@ -35,35 +39,15 @@ class HolidayRepositoryTest {
 
         // when
         holidayRepository.save(holiday);
-
-        Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
+        em.flush();
+        em.clear();
 
         // then
-        assertThat(findHoliday).isEqualTo(holiday);
+        Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
+        assertThat(findHoliday).isNotNull();
         assertThat(findHoliday.getName()).isEqualTo(name);
         assertThat(findHoliday.getDate()).isEqualTo(date);
         assertThat(findHoliday.getType()).isEqualTo(type);
-    }
-
-    @Test
-    @DisplayName("휴일 조회")
-    void getHoliday() {
-        // given
-        String name = "신정";
-        String date = "20250101";
-        HolidayType type = HolidayType.PUBLIC;
-
-        Holiday holiday = Holiday.createHoliday(name, date, type);
-        holidayRepository.save(holiday);
-
-        // when
-        Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
-
-        // then
-        assertThat(findHoliday.getSeq()).isEqualTo(holiday.getSeq());
-        assertThat(findHoliday.getName()).isEqualTo(holiday.getName());
-        assertThat(findHoliday.getDate()).isEqualTo(holiday.getDate());
-        assertThat(findHoliday.getType()).isEqualTo(holiday.getType());
     }
 
     @Test
@@ -79,17 +63,15 @@ class HolidayRepositoryTest {
             holidayRepository.save(holiday);
         }
 
-        double random = Math.random();
-        int idx = (int)(random * 2);    // 0~2
-
         // when
-        List<Holiday> holidays = holidayRepository.findHolidays();  // order로 정렬하므로 배열 idx와 같아야함
+        List<Holiday> holidays = holidayRepository.findHolidays();
 
         // then
         assertThat(holidays.size()).isEqualTo(names.length);
-        assertThat(holidays.get(idx).getName()).isEqualTo(names[idx]);
-        assertThat(holidays.get(idx).getDate()).isEqualTo(dates[idx]);
-        assertThat(holidays.get(idx).getType()).isEqualTo(types[idx]);
+        // 쿼리에서 날짜 기준으로 정렬하므로 순서까지 맞아야함
+        assertThat(holidays).extracting("name").containsExactly(names);
+        assertThat(holidays).extracting("date").containsExactly(dates);
+        assertThat(holidays).extracting("type").containsExactly(types);
     }
 
     @Test
@@ -182,9 +164,11 @@ class HolidayRepositoryTest {
 
         // when
         holidayRepository.delete(holiday);
-        Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
+        em.flush();
+        em.clear();
 
         // then
-        assertThat(Objects.isNull(findHoliday)).isEqualTo(true);
+        Holiday findHoliday = holidayRepository.findHoliday(holiday.getSeq());
+        assertThat(findHoliday).isNull();
     }
 }

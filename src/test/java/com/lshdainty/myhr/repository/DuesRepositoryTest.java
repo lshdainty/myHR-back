@@ -72,11 +72,12 @@ class DuesRepositoryTest {
 
         // then
         assertThat(dues.size()).isEqualTo(names.length);
-        assertThat(dues).extracting("userName").containsExactlyInAnyOrder(names);
-        assertThat(dues).extracting("amount").containsExactlyInAnyOrder(10000, 80000, 10000);
-        assertThat(dues).extracting("type").containsExactlyInAnyOrder(types);
-        assertThat(dues).extracting("date").containsExactlyInAnyOrder(dates);
-        assertThat(dues).extracting("detail").containsExactlyInAnyOrder(details);
+        // 쿼리에서 날짜 기준으로 정렬하므로 순서까지 맞아야함
+        assertThat(dues).extracting("userName").containsExactly(names);
+        assertThat(dues).extracting("amount").containsExactly(10000, 80000, 10000);
+        assertThat(dues).extracting("type").containsExactly(types);
+        assertThat(dues).extracting("date").containsExactly(dates);
+        assertThat(dues).extracting("detail").containsExactly(details);
     }
 
     @Test
