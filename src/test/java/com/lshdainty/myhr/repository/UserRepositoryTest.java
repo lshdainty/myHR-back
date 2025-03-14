@@ -28,7 +28,6 @@ class UserRepositoryTest {
     @Autowired
     private EntityManager em;
 
-
     @Test
     @DisplayName("유저 등록")
     void save() {

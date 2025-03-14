@@ -1,6 +1,7 @@
 package com.lshdainty.myhr.repository;
 
 import com.lshdainty.myhr.domain.Holiday;
+import com.lshdainty.myhr.domain.HolidayType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,9 @@ class HolidayRepositoryTest {
         // given
         String name = "신정";
         String date = "20250101";
+        HolidayType type = HolidayType.PUBLIC;
 
-        Holiday holiday = Holiday.createHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date, type);
 
         // when
         holidayRepository.save(holiday);
@@ -40,6 +42,7 @@ class HolidayRepositoryTest {
         assertThat(findHoliday).isEqualTo(holiday);
         assertThat(findHoliday.getName()).isEqualTo(name);
         assertThat(findHoliday.getDate()).isEqualTo(date);
+        assertThat(findHoliday.getType()).isEqualTo(type);
     }
 
     @Test
@@ -48,8 +51,9 @@ class HolidayRepositoryTest {
         // given
         String name = "신정";
         String date = "20250101";
+        HolidayType type = HolidayType.PUBLIC;
 
-        Holiday holiday = Holiday.createHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date, type);
         holidayRepository.save(holiday);
 
         // when
@@ -59,6 +63,7 @@ class HolidayRepositoryTest {
         assertThat(findHoliday.getSeq()).isEqualTo(holiday.getSeq());
         assertThat(findHoliday.getName()).isEqualTo(holiday.getName());
         assertThat(findHoliday.getDate()).isEqualTo(holiday.getDate());
+        assertThat(findHoliday.getType()).isEqualTo(holiday.getType());
     }
 
     @Test
@@ -67,9 +72,10 @@ class HolidayRepositoryTest {
         // given
         String[] names = {"신정", "어린이날", "크리스마스"};
         String[] dates = {"20250101", "20250505", "20251225"};
+        HolidayType[] types = {HolidayType.PUBLIC, HolidayType.PUBLIC, HolidayType.PUBLIC};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i], types[i]);
             holidayRepository.save(holiday);
         }
 
@@ -83,6 +89,7 @@ class HolidayRepositoryTest {
         assertThat(holidays.size()).isEqualTo(names.length);
         assertThat(holidays.get(idx).getName()).isEqualTo(names[idx]);
         assertThat(holidays.get(idx).getDate()).isEqualTo(dates[idx]);
+        assertThat(holidays.get(idx).getType()).isEqualTo(types[idx]);
     }
 
     @Test
@@ -91,9 +98,10 @@ class HolidayRepositoryTest {
         // given
         String[] names = {"신정", "어린이날", "크리스마스"};
         String[] dates = {"20250101", "20250505", "20251225"};
+        HolidayType[] types = {HolidayType.PUBLIC, HolidayType.PUBLIC, HolidayType.PUBLIC};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i], types[i]);
             holidayRepository.save(holiday);
         }
 
@@ -104,6 +112,7 @@ class HolidayRepositoryTest {
         assertThat(holidays.size()).isEqualTo(1);
         assertThat(holidays.get(0).getName()).isEqualTo("신정");
         assertThat(holidays.get(0).getDate()).isEqualTo("20250101");
+        assertThat(holidays.get(0).getType()).isEqualTo(HolidayType.PUBLIC);
     }
 
     @Test
@@ -112,9 +121,10 @@ class HolidayRepositoryTest {
         // given
         String[] names = {"신정", "어린이날", "크리스마스"};
         String[] dates = {"20250101", "20250505", "20251225"};
+        HolidayType[] types = {HolidayType.PUBLIC, HolidayType.PUBLIC, HolidayType.PUBLIC};
 
         for (int i = 0; i < names.length; i++) {
-            Holiday holiday = Holiday.createHoliday(names[i], dates[i]);
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i], types[i]);
             holidayRepository.save(holiday);
         }
 
@@ -127,12 +137,36 @@ class HolidayRepositoryTest {
         assertThat(holidayLeft.size()).isEqualTo(1);
         assertThat(holidayLeft.get(0).getName()).isEqualTo("신정");
         assertThat(holidayLeft.get(0).getDate()).isEqualTo("20250101");
+        assertThat(holidayLeft.get(0).getType()).isEqualTo(HolidayType.PUBLIC);
 
         assertThat(holidayRight.size()).isEqualTo(1);
         assertThat(holidayRight.get(0).getName()).isEqualTo("어린이날");
         assertThat(holidayRight.get(0).getDate()).isEqualTo("20250505");
+        assertThat(holidayRight.get(0).getType()).isEqualTo(HolidayType.PUBLIC);
 
         assertThat(holidayNo.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("타입에 해당하는 휴일만 나오는지 조회")
+    void getHolidaysByType() {
+        // given
+        String[] names = {"신정", "권장휴가", "크리스마스"};
+        String[] dates = {"20250101", "20250404", "20251225"};
+        HolidayType[] types = {HolidayType.PUBLIC, HolidayType.RECOMMEND, HolidayType.PUBLIC};
+
+        for (int i = 0; i < names.length; i++) {
+            Holiday holiday = Holiday.createHoliday(names[i], dates[i], types[i]);
+            holidayRepository.save(holiday);
+        }
+
+        // when
+        List<Holiday> publics = holidayRepository.findHolidaysByType(HolidayType.PUBLIC);
+        List<Holiday> recommends = holidayRepository.findHolidaysByType(HolidayType.RECOMMEND);
+
+        // then
+        assertThat(publics.size()).isEqualTo(2);
+        assertThat(recommends.size()).isEqualTo(1);
     }
 
     @Test
@@ -141,8 +175,9 @@ class HolidayRepositoryTest {
         // given
         String name = "신정";
         String date = "20250101";
+        HolidayType type = HolidayType.PUBLIC;
 
-        Holiday holiday = Holiday.createHoliday(name, date);
+        Holiday holiday = Holiday.createHoliday(name, date, type);
         holidayRepository.save(holiday);
 
         // when
