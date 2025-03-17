@@ -21,6 +21,10 @@ public class UserService {
     public Long join(String name, String birth, String employ, String workTime, String lunar) {
         User user = User.createUser(name, birth, employ, workTime, lunar);
         userRepository.save(user);
+
+        // 유저 id 없으면 에러 반환
+        if (Objects.isNull(user.getId())) { throw new IllegalArgumentException("failed to save user"); }
+
         return user.getId();
     }
 
