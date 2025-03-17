@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -26,7 +27,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("회원 가입")
-    public void signUp() {
+    void signUp() {
         // given
         String name = "이서준";
         String birth = "19700723";
@@ -36,9 +37,44 @@ public class UserServiceTest {
         doNothing().when(userRepository).save(any(User.class));
 
         // when
-        Long userId = userService.join(name, birth, workTime, employ, lunar);
+        Long userId = userService.join(name, birth, employ, workTime, lunar);
 
         // then
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("단건 유저 조회 테스트 (성공)")
+    void findUserSuccessTest() {
+        // given
+        String name = "이서준";
+        String birth = "19700723";
+        String workTime = "9 ~ 6";
+        String employ = "ADMIN";
+        String lunar = "N";
+        User user = User.createUser(name, birth, employ, workTime, lunar);
+        given(userRepository.findById(1L)).willReturn(user);
+
+        // when
+        User findUser = userRepository.findById(1L);
+
+        // then
+        assertThat(findUser).isNotNull();
+        assertThat(findUser.getName()).isEqualTo(name);
+        assertThat(findUser.getBirth()).isEqualTo(birth);
+        assertThat(findUser.getWorkTime()).isEqualTo(workTime);
+        assertThat(findUser.getEmploy()).isEqualTo(employ);
+        assertThat(findUser.getLunarYN()).isEqualTo(lunar);
+        assertThat(findUser.getDelYN()).isEqualTo("N");
+    }
+
+    @Test
+    @DisplayName("단건 유저 조회 테스트 (실패)")
+    void findUserFailsTest() {
+        // given
+        given(userRepository.findById(999L)).willReturn(null);
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () -> userService.findUser(999L));
     }
 }
