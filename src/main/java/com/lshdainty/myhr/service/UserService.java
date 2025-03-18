@@ -25,11 +25,7 @@ public class UserService {
     }
 
     public User findUser(Long userId) {
-        User user = userRepository.findById(userId);
-
-        // 유저 없으면 에러 반환
-        if (Objects.isNull(user) || user.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
-
+        User user = checkUserExist(userId);
         return user;
     }
 
@@ -39,21 +35,19 @@ public class UserService {
 
     @Transactional
     public void editUser(Long userId, String name, String birth, String employ, String workTime, String lunar) {
-        User findUser = userRepository.findById(userId);
-
-        // 유저 없으면 에러 반환
-        if (Objects.isNull(findUser) || findUser.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
-
-        findUser.updateUser(name, birth, employ, workTime, lunar);
+        User user = checkUserExist(userId);
+        user.updateUser(name, birth, employ, workTime, lunar);
     }
 
     @Transactional
     public void deleteUser(Long userId) {
+        User user = checkUserExist(userId);
+        user.deleteUser();
+    }
+
+    public User checkUserExist(Long userId) {
         User findUser = userRepository.findById(userId);
-
-        // 유저 없으면 에러 반환
         if (Objects.isNull(findUser) || findUser.getDelYN().equals("Y")) { throw new IllegalArgumentException("user not found"); }
-
-        findUser.deleteUser();
+        return findUser;
     }
 }

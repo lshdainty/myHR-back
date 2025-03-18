@@ -21,6 +21,14 @@ public class ApiResponse<T> {
         return new ApiResponse<>(0, "success", 0, null);
     }
 
+    public static <T> ApiResponse<T> fail(T data) {
+        return new ApiResponse<>(0, "fail", 0, data);
+    }
+
+    public static <T> ApiResponse<T> fail() {
+        return new ApiResponse<>(0, "fail", 0, null);
+    }
+
     private static <T> int getCount(T data) {
         if (data instanceof Object[]) { // array
             return ((Object[]) data).length;

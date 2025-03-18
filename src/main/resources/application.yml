@@ -18,6 +18,11 @@ spring:
         highlight_sql: true
         default_batch_fetch_size: 100
 
+server:
+  servlet:
+    session:
+      timeout: 8h
+
 logging:
   level:
     com.lshdainty.myhr.api: debug
