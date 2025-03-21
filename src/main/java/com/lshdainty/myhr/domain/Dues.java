@@ -31,9 +31,9 @@ public class Dues {
     private String detail;
 
     // 회비 생성자  (setter말고 해당 메소드 사용할 것)
-    public static Dues createDues(String name, int amount, DuesType type, String date, String detail) {
+    public static Dues createDues(String userName, int amount, DuesType type, String date, String detail) {
         Dues dues = new Dues();
-        dues.userName = name;
+        dues.userName = userName;
         dues.amount = amount;
         dues.type = type;
         dues.date = date;

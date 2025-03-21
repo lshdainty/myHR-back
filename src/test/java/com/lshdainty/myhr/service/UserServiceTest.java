@@ -98,7 +98,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("전체 유저 조회 테스트 - 성공")
-    void findUsersTest() {
+    void findUsersSuccessTest() {
         // given
         given(userRepository.findUsers()).willReturn(List.of(
                 User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N"),

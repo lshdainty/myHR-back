@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +19,8 @@ public class DuesService {
     private final DuesRepository duesRepository;
 
     @Transactional
-    public Long save(String name, int amount, DuesType type, String date, String detail) {
-        Dues dues = Dues.createDues(name, amount, type, date, detail);
+    public Long save(String userName, int amount, DuesType type, String date, String detail) {
+        Dues dues = Dues.createDues(userName, amount, type, date, detail);
         duesRepository.save(dues);
         return dues.getSeq();
     }
@@ -34,7 +35,13 @@ public class DuesService {
 
     @Transactional
     public void deleteDues(Long duesSeq) {
-        Dues findDues = duesRepository.findById(duesSeq);
+        Dues findDues = checkDuesExist(duesSeq);
         duesRepository.delete(findDues);
+    }
+
+    public Dues checkDuesExist(Long duesSeq) {
+        Dues findDues = duesRepository.findById(duesSeq);
+        if (Objects.isNull(findDues)) { throw new IllegalArgumentException("dues not found"); }
+        return findDues;
     }
 }

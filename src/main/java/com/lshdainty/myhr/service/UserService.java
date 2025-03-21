@@ -25,8 +25,7 @@ public class UserService {
     }
 
     public User findUser(Long userId) {
-        User user = checkUserExist(userId);
-        return user;
+        return checkUserExist(userId);
     }
 
     public List<User> findUsers() {

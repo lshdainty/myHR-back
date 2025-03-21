@@ -91,7 +91,7 @@ class HolidayServiceTest {
 
     @Test
     @DisplayName("전체 휴일 조회 테스트 - 성공 (시간 정렬)")
-    void findHolidaysTest() {
+    void findHolidaysSuccessTest() {
         // Given
         given(holidayRepository.findHolidays()).willReturn(List.of(
                 Holiday.createHoliday("신정", "20250101", HolidayType.PUBLIC),
@@ -211,7 +211,7 @@ class HolidayServiceTest {
     @DisplayName("휴일 삭제 테스트 - 실패 (휴일 없음)")
     void deleteHolidayFailTest() {
         // Given
-        Long seq = 999L;
+        Long seq = 900L;
         given(holidayRepository.findHoliday(seq)).willReturn(null);
 
         // When & Then

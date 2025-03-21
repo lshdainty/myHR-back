@@ -26,12 +26,7 @@ public class HolidayService {
     }
 
     public Holiday findHoliday(Long seq) {
-        Holiday holiday = holidayRepository.findHoliday(seq);
-
-        // holiday 없으면 에러 반환
-        if (Objects.isNull(holiday)) { throw new IllegalArgumentException("holiday not found"); }
-
-        return holiday;
+        return checkHolidayExist(seq);
     }
 
     public List<Holiday> findHolidays() {
@@ -44,21 +39,19 @@ public class HolidayService {
 
     @Transactional
     public void editHoliday(Long holidaySeq, String name, String date, HolidayType type) {
-        Holiday findHoliday = holidayRepository.findHoliday(holidaySeq);
-
-        // holiday 없으면 에러 반환
-        if (Objects.isNull(findHoliday)) { throw new IllegalArgumentException("holiday not found"); }
-
+        Holiday findHoliday = checkHolidayExist(holidaySeq);
         findHoliday.updateHoliday(name, date, type);
     }
 
     @Transactional
     public void deleteHoliday(Long holidaySeq) {
-        Holiday findHoliday = holidayRepository.findHoliday(holidaySeq);
-
-        // holiday 없으면 에러 반환
-        if (Objects.isNull(findHoliday)) { throw new IllegalArgumentException("holiday not found"); }
-
+        Holiday findHoliday = checkHolidayExist(holidaySeq);
         holidayRepository.delete(findHoliday);
+    }
+
+    public Holiday checkHolidayExist(Long holidaySeq) {
+        Holiday findHoliday = holidayRepository.findHoliday(holidaySeq);
+        if (Objects.isNull(findHoliday)) { throw new IllegalArgumentException("holiday not found"); }
+        return findHoliday;
     }
 }
