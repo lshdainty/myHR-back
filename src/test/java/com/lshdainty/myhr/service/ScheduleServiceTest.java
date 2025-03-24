@@ -40,203 +40,240 @@ class ScheduleServiceTest {
     private ScheduleService scheduleService;
 
     @Test
-    @DisplayName("휴가 스케줄 추가 성공 테스트")
+    @DisplayName("스케줄(휴가) 추가 테스트 - 성공")
     void addScheduleWithVacationSuccessTest() {
         // Given
         Long userNo = 1L;
         Long vacationId = 1L;
         ScheduleType type = ScheduleType.DAYOFF;
-        String desc = "연차 휴가";
+        String desc = "연차";
         LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plusDays(1);
-        Long addUserNo = 1L;
-        String clientIP = "127.0.0.1";
+        LocalDateTime end = start.plusDays(3);
 
-        User mockUser = new User();
-        Vacation mockVacation = Vacation.createVacation(mockUser, "연차", "연차 휴가", VacationType.BASIC, new BigDecimal("8.0000"), start.minusDays(30), end.plusDays(30), addUserNo, clientIP);
-        Schedule mockSchedule = Schedule.createSchedule(mockUser, mockVacation, desc, type, start, end, addUserNo, clientIP);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+        Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, start, end, 0L, "127.0.0.1");
 
-        given(userRepository.findById(userNo)).willReturn(mockUser);
-        given(vacationRepository.findById(vacationId)).willReturn(mockVacation);
+        given(userRepository.findById(userNo)).willReturn(user);
+        given(vacationRepository.findById(vacationId)).willReturn(vacation);
         given(scheduleRepository.findCountByVacation(any(Vacation.class))).willReturn(Collections.emptyList());
         given(holidayRepository.findHolidaysByStartEndDate(any(), any())).willReturn(Collections.emptyList());
-        given(scheduleRepository.save(any(Schedule.class))).willReturn(mockSchedule);
+        willDoNothing().given(scheduleRepository).save(any(Schedule.class));
 
         // When
-        Long scheduleId = scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, addUserNo, clientIP);
+        Long scheduleId = scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, 0L, "127.0.0.1");
 
         // Then
-        assertThat(scheduleId).isNotNull();
         then(scheduleRepository).should().save(any(Schedule.class));
     }
 
     @Test
-    @DisplayName("휴가 스케줄 추가 실패 테스트 - 사용자 없음")
+    @DisplayName("스케줄(휴가) 추가 테스트 - 실패 (사용자 없음)")
     void addScheduleWithVacationFailUserNotFoundTest() {
         // Given
-        Long userNo = 999L;
+        Long userNo = 900L;
+        Long vacationId = 1L;
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusDays(3);
+
         given(userRepository.findById(userNo)).willReturn(null);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.addSchedule(userNo, 1L, ScheduleType.DAYOFF, "desc", LocalDateTime.now(), LocalDateTime.now().plusDays(1), 1L, "127.0.0.1"));
+                scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, 0L, "127.0.0.1"));
     }
 
     @Test
-    @DisplayName("휴가 스케줄 추가 실패 테스트 - 휴가 없음")
+    @DisplayName("스케줄(휴가) 추가 테스트 - 실패 (휴가 없음)")
     void addScheduleWithVacationFailVacationNotFoundTest() {
         // Given
         Long userNo = 1L;
-        Long vacationId = 999L;
-        User mockUser = new User();
-        given(userRepository.findById(userNo)).willReturn(mockUser);
+        Long vacationId = 1L;
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusDays(3);
+
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+
+        given(userRepository.findById(userNo)).willReturn(user);
         given(vacationRepository.findById(vacationId)).willReturn(null);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.addSchedule(userNo, vacationId, ScheduleType.DAYOFF, "desc", LocalDateTime.now(), LocalDateTime.now().plusDays(1), 1L, "127.0.0.1"));
+                scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, 0L, "127.0.0.1"));
     }
 
     @Test
-    @DisplayName("휴가 스케줄 추가 실패 테스트 - 만료된 휴가")
+    @DisplayName("스케줄(휴가) 추가 테스트 - 실패 (만료된 휴가)")
     void addScheduleWithVacationFailExpiredVacationTest() {
         // Given
         Long userNo = 1L;
         Long vacationId = 1L;
-        User mockUser = new User();
-        Vacation mockVacation = Vacation.createVacation(mockUser, "연차", "연차 휴가", VacationType.BASIC, new BigDecimal("8.0000"), LocalDateTime.now().minusDays(60), LocalDateTime.now().minusDays(30), 1L, "127.0.0.1");
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusDays(3);
 
-        given(userRepository.findById(userNo)).willReturn(mockUser);
-        given(vacationRepository.findById(vacationId)).willReturn(mockVacation);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear() - 1, 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear() - 1, 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+
+        given(userRepository.findById(userNo)).willReturn(user);
+        given(vacationRepository.findById(vacationId)).willReturn(vacation);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.addSchedule(userNo, vacationId, ScheduleType.DAYOFF, "desc", LocalDateTime.now(), LocalDateTime.now().plusDays(1), 1L, "127.0.0.1"));
+                scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, 0L, "127.0.0.1"));
     }
 
     @Test
-    @DisplayName("휴가 스케줄 추가 실패 테스트 - 휴가 부족")
+    @DisplayName("스케줄(휴가) 추가 테스트 - 실패 (휴가 부족)")
     void addScheduleWithVacationFailNotEnoughVacationTest() {
         // Given
         Long userNo = 1L;
         Long vacationId = 1L;
-        User mockUser = new User();
-        Vacation mockVacation = Vacation.createVacation(mockUser, "연차", "연차 휴가", VacationType.BASIC, new BigDecimal("8.0000"), LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(30), 1L, "127.0.0.1");
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusDays(4);
 
-        given(userRepository.findById(userNo)).willReturn(mockUser);
-        given(vacationRepository.findById(vacationId)).willReturn(mockVacation);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+
+        given(userRepository.findById(userNo)).willReturn(user);
+        given(vacationRepository.findById(vacationId)).willReturn(vacation);
         given(scheduleRepository.findCountByVacation(any(Vacation.class))).willReturn(Collections.emptyList());
         given(holidayRepository.findHolidaysByStartEndDate(any(), any())).willReturn(Collections.emptyList());
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.addSchedule(userNo, vacationId, ScheduleType.DAYOFF, "desc", LocalDateTime.now(), LocalDateTime.now().plusDays(2), 1L, "127.0.0.1"));
+                scheduleService.addSchedule(userNo, vacationId, type, desc, start, end, 0L, "127.0.0.1"));
     }
 
     @Test
-    @DisplayName("비휴가 스케줄 추가 성공 테스트")
+    @DisplayName("스케줄(비휴가) 추가 테스트 - 성공")
     void addScheduleWithoutVacationSuccessTest() {
         // Given
         Long userNo = 1L;
         ScheduleType type = ScheduleType.EDUCATION;
         String desc = "교육";
         LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plusDays(1);
-        Long addUserNo = 1L;
-        String clientIP = "127.0.0.1";
+        LocalDateTime end = start.plusDays(3);
 
-        User mockUser = new User();
-        Schedule mockSchedule = Schedule.createSchedule(mockUser, null, desc, type, start, end, addUserNo, clientIP);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Schedule mockSchedule = Schedule.createSchedule(user,null,  desc, type, start, end, 0L, "127.0.0.1");
 
-        given(userRepository.findById(userNo)).willReturn(mockUser);
-        given(scheduleRepository.save(any(Schedule.class))).willReturn(mockSchedule);
+        given(userRepository.findById(userNo)).willReturn(user);
+        willDoNothing().given(scheduleRepository).save(any(Schedule.class));
 
         // When
-        Long scheduleId = scheduleService.addSchedule(userNo, type, desc, start, end, addUserNo, clientIP);
+        Long scheduleId = scheduleService.addSchedule(userNo, type, desc, start, end, 0L, "127.0.0.1");
 
         // Then
-        assertThat(scheduleId).isNotNull();
         then(scheduleRepository).should().save(any(Schedule.class));
     }
 
     @Test
-    @DisplayName("사용자별 스케줄 조회 테스트")
+    @DisplayName("사용자별 스케줄 조회 테스트 - 성공")
     void findSchedulesByUserNoTest() {
         // Given
         Long userNo = 1L;
-        List<Schedule> mockSchedules = Arrays.asList(
-                Schedule.createSchedule(new User(), null, "스케줄1", ScheduleType.DAYOFF, LocalDateTime.now(), LocalDateTime.now().plusDays(1), 1L, "127.0.0.1"),
-                Schedule.createSchedule(new User(), null, "스케줄2", ScheduleType.EDUCATION, LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3), 1L, "127.0.0.1")
-        );
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
 
-        given(scheduleRepository.findSchedulesByUserNo(userNo)).willReturn(mockSchedules);
+        given(scheduleRepository.findSchedulesByUserNo(userNo)).willReturn(List.of(
+                Schedule.createSchedule(user, vacation, "휴가", ScheduleType.DAYOFF, LocalDateTime.now(), LocalDateTime.now().plusDays(1), 0L, "127.0.0.1"),
+                Schedule.createSchedule(user, null, "교육", ScheduleType.EDUCATION, LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3), 0L, "127.0.0.1")
+        ));
 
         // When
         List<Schedule> schedules = scheduleService.findSchedulesByUserNo(userNo);
 
         // Then
         assertThat(schedules).hasSize(2);
-        assertThat(schedules).extracting("desc").containsExactly("스케줄1", "스케줄2");
+        assertThat(schedules)
+                .extracting("desc")
+                .containsExactlyInAnyOrder("휴가", "교육");
     }
 
     @Test
-    @DisplayName("스케줄 삭제 성공 테스트")
+    @DisplayName("스케줄 삭제 테스트 - 성공")
     void deleteScheduleSuccessTest() {
         // Given
         Long scheduleId = 1L;
-        Long delUserNo = 1L;
-        String clientIP = "127.0.0.1";
-        Schedule mockSchedule = Schedule.createSchedule(new User(), null, "스케줄", ScheduleType.DAYOFF, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), 1L, "127.0.0.1");
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = start.plusDays(3);
 
-        given(scheduleRepository.findById(scheduleId)).willReturn(mockSchedule);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+        Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, start, end, 0L, "127.0.0.1");
+
+        given(scheduleRepository.findById(scheduleId)).willReturn(schedule);
 
         // When
-        scheduleService.deleteSchedule(scheduleId, delUserNo, clientIP);
+        scheduleService.deleteSchedule(scheduleId, 0L, "127.0.0.1");
 
         // Then
-        assertThat(mockSchedule.getDelYN()).isEqualTo("Y");
+        assertThat(schedule.getDelYN()).isEqualTo("Y");
     }
 
     @Test
-    @DisplayName("스케줄 삭제 실패 테스트 - 스케줄 없음")
+    @DisplayName("스케줄 삭제 테스트 - 실패 (스케줄 없음)")
     void deleteScheduleFailScheduleNotFoundTest() {
         // Given
-        Long scheduleId = 999L;
+        Long scheduleId = 900L;
         given(scheduleRepository.findById(scheduleId)).willReturn(null);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.deleteSchedule(scheduleId, 1L, "127.0.0.1"));
+                scheduleService.deleteSchedule(scheduleId, 0L, "127.0.0.1"));
     }
 
     @Test
-    @DisplayName("스케줄 삭제 실패 테스트 - 과거 스케줄")
+    @DisplayName("스케줄 삭제 테스트 - 실패 (과거 스케줄)")
     void deleteScheduleFailPastScheduleTest() {
         // Given
         Long scheduleId = 1L;
-        Schedule mockSchedule = Schedule.createSchedule(new User(), null, "과거 스케줄", ScheduleType.DAYOFF, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), 1L, "127.0.0.1");
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.now().minusDays(3);
+        LocalDateTime end = LocalDateTime.now().minusDays(2);
 
-        given(scheduleRepository.findById(scheduleId)).willReturn(mockSchedule);
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+        Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, start, end, 0L, "127.0.0.1");
+
+        given(scheduleRepository.findById(scheduleId)).willReturn(schedule);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.deleteSchedule(scheduleId, 1L, "127.0.0.1"));
+                scheduleService.deleteSchedule(scheduleId, 0L, "127.0.0.1"));
     }
 
     @Test
     @DisplayName("실제 사용 휴가 시간 계산 테스트")
     void calculateRealUsedTest() {
         // Given
-        User mockUser = new User();
-        Vacation mockVacation = Vacation.createVacation(mockUser, "연차", "연차 휴가", VacationType.BASIC, new BigDecimal("40.0000"), LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(30), 1L, "127.0.0.1");
-        Schedule mockSchedule = Schedule.createSchedule(mockUser, mockVacation, "5일 연차", ScheduleType.DAYOFF, LocalDateTime.of(2023, 5, 1, 9, 0), LocalDateTime.of(2023, 5, 5, 18, 0), 1L, "127.0.0.1");
+        Long scheduleId = 1L;
+        ScheduleType type = ScheduleType.DAYOFF;
+        String desc = "연차";
+        LocalDateTime start = LocalDateTime.of(2025, 5, 1, 0, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 5, 5, 0, 0, 0);
 
-        List<LocalDate> holidays = Arrays.asList(LocalDate.of(2023, 5, 3));
+        User user = User.createUser("이서준", "19700723", "ADMIN", "9 ~ 6", "N");
+        Vacation vacation = Vacation.createVacation(user, "정기 휴가", "25년 1분기 정기 휴가", VacationType.BASIC, new BigDecimal("32"), LocalDateTime.of(LocalDateTime.now().getYear(), 1, 1, 0, 0, 0), LocalDateTime.of(LocalDateTime.now().getYear(), 12, 31, 23, 59, 59), 0L, "127.0.0.1");
+        Schedule schedule = Schedule.createSchedule(user, vacation, desc, type, start, end, 0L, "127.0.0.1");
+
+        List<LocalDate> holidays = Arrays.asList(LocalDate.of(2025, 5, 5));
 
         // When
-        BigDecimal realUsed = scheduleService.calculateRealUsed(mockSchedule, holidays);
+        BigDecimal realUsed = scheduleService.calculateRealUsed(schedule, holidays);
 
         // Then
-        assertThat(realUsed).isEqualTo(new BigDecimal("32.0000")); // 5일 중 주말(1일)과 공휴일(1일)을 제외한 3일 * 8시간 = 24시간
+        assertThat(realUsed).isEqualTo(new BigDecimal("16"));
     }
 }
