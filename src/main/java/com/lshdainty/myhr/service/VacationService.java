@@ -30,6 +30,9 @@ public class VacationService {
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
         Vacation vacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
+
+        if (vacation.isBeforeOccur()) { throw new IllegalArgumentException("the expiration date is earlier than the occurrence date"); }
+
         vacationRepository.save(vacation);
 
         return vacation.getId();
@@ -71,14 +74,14 @@ public class VacationService {
 
         if (Objects.isNull(user)) { throw new IllegalArgumentException("user not found"); }
 
-        findVacation.deleteVacation(addUserNo, clientIP);
-
         Vacation newVacation = Vacation.createVacation(user, name, desc, type, grantTime, occurDate, expiryDate, addUserNo, clientIP);
+
+        if (newVacation.isBeforeOccur()) { throw new IllegalArgumentException("the expiration date is earlier than the occurrence date"); }
+
+        findVacation.deleteVacation(addUserNo, clientIP);
         vacationRepository.save(newVacation);
 
-        Vacation findNewVacation = vacationRepository.findById(newVacation.getId());
-
-        return findNewVacation;
+        return vacationRepository.findById(newVacation.getId());
     }
 
     @Transactional

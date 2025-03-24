@@ -71,4 +71,16 @@ public class Vacation extends AuditingFields {
         this.delYN = "Y";
         this.setDeleted(LocalDateTime.now(), userNo, clientIP);
     }
+
+    /* 비즈니스 편의 메소드 */
+
+    /**
+     * occurDate, expireDate를 비교하여
+     * 발생일자가 만료일자 이전인지 확인
+     *
+     * @return true, false
+     */
+    public boolean isBeforeOccur() {
+        return !getOccurDate().isBefore(getExpiryDate());
+    }
 }

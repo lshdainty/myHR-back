@@ -5,6 +5,7 @@ import com.lshdainty.myhr.repository.HolidayRepository;
 import com.lshdainty.myhr.repository.ScheduleRepository;
 import com.lshdainty.myhr.repository.UserRepository;
 import com.lshdainty.myhr.repository.VacationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
+@DisplayName("스케줄 서비스 테스트")
 class ScheduleServiceTest {
 
     @Mock
